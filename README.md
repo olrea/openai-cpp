@@ -1,6 +1,6 @@
 # OpenAI C++ library
 
-[![Language](https://img.shields.io/badge/language-C++-blue.svg)](https://isocpp.org/)  [![Standard](https://img.shields.io/badge/c%2B%2B-11-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization) [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://opensource.org/licenses/MIT) [![Build Status](https://travis-ci.org/olrea/openaicpp.svg?branch=main)](https://travis-ci.org/olrea/openaicpp) [![Build status](https://ci.appveyor.com/api/projects/status/9v928kd5cwd82pt9?svg=true)](https://ci.appveyor.com/project/olrea/openaicpp) [![GitHub version](https://badge.fury.io/gh/olrea%2Fopenaicpp.svg)](https://github.com/olrea/openaicpp/releases) 
+[![Language](https://img.shields.io/badge/language-C++-blue.svg)](https://isocpp.org/)  [![Standard](https://img.shields.io/badge/c%2B%2B-11-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization) [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://opensource.org/licenses/MIT) [![Build Status](https://travis-ci.org/olrea/openaicpp.svg?branch=main)](https://travis-ci.org/olrea/openaicpp) [![Build status](https://ci.appveyor.com/api/projects/status/u2rf99lqt9ai9f6t?svg=true)](https://ci.appveyor.com/project/coin-au-carre/openai-cpp) [![GitHub version](https://badge.fury.io/gh/olrea%2Fopenaicpp.svg)](https://github.com/olrea/openaicpp/releases) 
 
 ## A lightweight modern C++ library
 
