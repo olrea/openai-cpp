@@ -28,7 +28,7 @@ Note: *OpenAI-CPP* uses [Nlohmann Json](https://github.com/nlohmann/json) (v3.11
 
 The following code is available at [examples/00-showcase.cpp](examples/00-showcase.cpp)
 
-```c++
+```cpp
 auto& openai = openai::configure("xxx-xxx-xxx-xxx"); // "xxx-xxx-xxx-xxx" is your secret OpenAI API key
 
 auto completion = openai::completion().create(R"(
@@ -93,13 +93,13 @@ Since `Openai::Json` is a typedef to a [nlohmann::json](https://github.com/nlohm
 ### All examples reference
 
 - [00-showcase.cpp](examples/00-showcase.cpp)
-- [01-model.cpp](examples/01-model.cpp) - [API models](https://beta.openai.com/docs/api-reference/models)
-- [02-completion.cpp](examples/02-completion.cpp) - [API completions](https://beta.openai.com/docs/api-reference/completions)
-- [03-edit.cpp](examples/03-edit.cpp) - [API edits](https://beta.openai.com/docs/api-reference/edits)
-- [04-image.cpp](examples/04-image.cpp) - [API images](https://beta.openai.com/docs/api-reference/images)
-- [05-embedding.cpp](examples/05-embedding.cpp) - [API embeddings](https://beta.openai.com/docs/api-reference/embeddings)
-- [06-file.cpp](examples/06-file.cpp) - [API files](https://beta.openai.com/docs/api-reference/files)
-- [07-fine-tune.cpp](examples/07-fine-tune.cpp) - [API fine-tunes](https://beta.openai.com/docs/api-reference/fine-tunes)
+- [01-model.cpp](examples/01-model.cpp) · [API models](https://beta.openai.com/docs/api-reference/models)
+- [02-completion.cpp](examples/02-completion.cpp) · [API completions](https://beta.openai.com/docs/api-reference/completions)
+- [03-edit.cpp](examples/03-edit.cpp) · [API edits](https://beta.openai.com/docs/api-reference/edits)
+- [04-image.cpp](examples/04-image.cpp) · [API images](https://beta.openai.com/docs/api-reference/images)
+- [05-embedding.cpp](examples/05-embedding.cpp) · [API embeddings](https://beta.openai.com/docs/api-reference/embeddings)
+- [06-file.cpp](examples/06-file.cpp) · [API files](https://beta.openai.com/docs/api-reference/files)
+- [07-fine-tune.cpp](examples/07-fine-tune.cpp) · [API fine-tunes](https://beta.openai.com/docs/api-reference/fine-tunes)
 - [09-instances.cpp](examples/09-instances.cpp)
 
 
