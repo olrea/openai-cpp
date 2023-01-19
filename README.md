@@ -165,7 +165,7 @@ Here are two approaches to keep alive the *OpenAI-CPP* session in your program s
 
 #### Use instance()
 
-*OpenAI-CPP* provides free convenient functions : `openai::start(const std::string& token)` and `openai::instance()`.
+This is the default behavior. *OpenAI-CPP* provides free convenient functions : `openai::start(const std::string& token)` and `openai::instance()`.
 Initialize and configure the OpenAI-CPP instance with:
 
 ```c++
@@ -178,7 +178,7 @@ When you are in another scope and you have lost the `openai` reference, you can 
 auto& openai = openai::instance();
 ```
 
-It might not be the recommended way but since we generally want to handle only one OpenAI instance (one token), it is highly convenient. You can refer to the example usage and  [examples/01-basic.cpp](examples/01-basic.cpp).
+It might not be the recommended way but since we generally want to handle only one OpenAI instance (one token), it is highly convenient. 
 
 #### Pass by reference
 
@@ -193,7 +193,7 @@ void bar(openai::OpenAI& openai) {
 }
 
 int main() {
-    openai::OpenAI openai_instance{"xxx-xxx-xxx-xxx"};
+    openai::OpenAI openai_instance{"your_api_key"};
     bar(openai_instance);
 }
 ```
@@ -207,5 +207,5 @@ You can use a [std::reference_wrapper](http://en.cppreference.com/w/cpp/utility/
 
 ## Acknowledgment
 
-This work has been inspired mainly inspired by [slacking](https://github.com/olrea/slacking) and the curl wrapper code from [cpr](https://github.com/libcpr/cpr).
+This work has been mainly inspired by [slacking](https://github.com/olrea/slacking) and the curl wrapper code from [cpr](https://github.com/libcpr/cpr).
 
