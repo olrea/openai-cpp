@@ -3,12 +3,7 @@
 #include <fstream>
 
 int main() {
-    // Load the OpenAI API key from a file. You can also specify directly the token in your code as a string.
-    std::string mytoken;
-    std::ifstream infile("token.txt");
-    std::getline(infile, mytoken);
-
-    openai::configure(mytoken); // Configure and launch the OpenAI instance
+    openai::start();
 
     auto res = openai::embedding().create({
         { "model", "text-embedding-ada-002" },

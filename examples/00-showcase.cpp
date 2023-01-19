@@ -3,8 +3,8 @@
 #include <iostream>
 
 int main() {
-    // your_API_key should come from an environment variable or an env file
-    openai::configure("your_API_key", "optional_organization");
+    openai::start(); // Will use the api key provided by `OPENAI_API_KEY` environment variable
+    // openai::start("your_API_key", "optional_organization"); // Or you can handle it by yourself
 
     auto completion = openai::completion().create(R"(
     {

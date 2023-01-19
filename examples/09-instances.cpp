@@ -36,19 +36,14 @@ void bar(openai::OpenAI& openai) {
 
 
 int main() {
-    // Load the API key from a file. You can also specify directly the token in your code as a string.
-    std::string mytoken;
-    std::ifstream infile("token.txt");
-    std::getline(infile, mytoken);
-
     // Create openai instance
-    openai::OpenAI openai_instance{mytoken};
+    openai::OpenAI openai_instance{};
     bar(openai_instance);
     Foo foo{openai_instance};
 
     // You can create other openai instances with different tokens and parameters
     {
-        openai::OpenAI another_openai_instance{"xxxx-xxxxxxxxx-xxxx"};
+        openai::OpenAI another_openai_instance{"wrong apy key"};
         // another_openai_instance.set_throw_exception(false); // You can set throw exception to false if you want
         
         try {

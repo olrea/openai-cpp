@@ -324,9 +324,13 @@ private:
 
 class OpenAI {
 public:
-    OpenAI() = delete;
-    OpenAI(const std::string& token, const std::string& organization = "", bool throw_exception = true) 
+    OpenAI(const std::string& token = "", const std::string& organization = "", bool throw_exception = true) 
         : session_{throw_exception}, token_{token}, organization_{organization}, throw_exception_{throw_exception} {
+            if (token.empty()) {
+                if(const char* env_p = std::getenv("OPENAI_API_KEY")) {
+                    token_ = std::string{env_p};
+                }
+            }
             session_.setUrl("https://api.openai.com/v1/");
             session_.setToken(token_, organization_);
         }
@@ -488,13 +492,13 @@ inline std::string bool_to_string(const bool b) {
     return ss.str();
 }
 
-inline OpenAI& configure(const std::string& token, const std::string& organization = "", bool throw_exception = true)  {
+inline OpenAI& start(const std::string& token = "", const std::string& organization = "", bool throw_exception = true)  {
     static OpenAI instance{token, organization, throw_exception};
     return instance;
 }
 
 inline OpenAI& instance() {
-    return configure("");
+    return start();
 }
 
 inline Json post(const std::string& suffix, const Json& json) {
@@ -649,7 +653,7 @@ inline Json CategoryModeration::create(Json input) {
 using _detail::OpenAI;
 
 // instance
-using _detail::configure;
+using _detail::start;
 using _detail::instance;
 
 // Generic methods

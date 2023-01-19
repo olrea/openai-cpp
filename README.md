@@ -1,7 +1,7 @@
 # OpenAI C++ library 
 
 [![Language](https://img.shields.io/badge/language-C++-blue.svg)](https://isocpp.org/)  [![Standard](https://img.shields.io/badge/c%2B%2B-11-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization) [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://opensource.org/licenses/MIT) ![Github worflow](https://github.com/olrea/openai-cpp/actions/workflows/cmake.yml/badge.svg)
- [![GitHub version](https://badge.fury.io/gh/olrea%2Fopenaicpp.svg)](https://github.com/olrea/openai-cpp/releases) 
+ [![GitHub version](https://badge.fury.io/gh/olrea%2Fopenai-cpp.svg)](https://github.com/olrea/openai-cpp/releases) 
 
 ## A lightweight header only modern C++ library
 
@@ -26,11 +26,17 @@ Note: *OpenAI-CPP* uses [Nlohmann Json](https://github.com/nlohmann/json) (v3.11
 
 ### Simple showcase
 
-The following code is available at [examples/00-showcase.cpp](examples/00-showcase.cpp)
+The following code is available at [examples/00-showcase.cpp](examples/00-showcase.cpp).
+
+The library needs to be configured with your account's secret key which is available on the [website](https://beta.openai.com/account/api-keys). It is recommended to set your `OPENAI_API_KEY` environment variable before using the library:
+
+```bash
+export OPENAI_API_KEY='sk-...'
+```
 
 ```cpp
-// "xxx-xxx-xxx-xxx" is your secret OpenAI API key which should come from an env variable and not be hard coded.
-auto& openai = openai::configure("xxx-xxx-xxx-xxx"); 
+openai::start(); // Will use the api key provided by `OPENAI_API_KEY` environment variable
+// openai::start("your_API_key", "optional_organization"); // Or you can handle it by yourself
 
 auto completion = openai::completion().create(R"(
 {
@@ -159,11 +165,11 @@ Here are two approaches to keep alive the *OpenAI-CPP* session in your program s
 
 #### Use instance()
 
-*OpenAI-CPP* provides free convenient functions : `openai::configure(const std::string& token)` and `openai::instance()`.
+*OpenAI-CPP* provides free convenient functions : `openai::start(const std::string& token)` and `openai::instance()`.
 Initialize and configure the OpenAI-CPP instance with:
 
 ```c++
-auto& openai = openai::configure("xxx-xxx-xxx-xxx");
+auto& openai = openai::start();
 ```
 
 When you are in another scope and you have lost the `openai` reference, you can grab it again with :  
@@ -197,7 +203,6 @@ You can use a [std::reference_wrapper](http://en.cppreference.com/w/cpp/utility/
 
 ## Next steps
 
-- [ ] Set api key from env variable `OPENAI_API_KEY` if token is empty
 - [ ] Provide convenient helpers
 
 ## Acknowledgment
