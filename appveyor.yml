@@ -36,16 +36,16 @@ install:
   ############################################################################
   # Install  libcurl
   ############################################################################
-  - appveyor DownloadFile "https://dl.dropboxusercontent.com/s/jxwohqax4e2avyt/libcurl-7.48.0-WinSSL-zlib-x86-x64.zip?dl=0" -FileName libcurl.zip
-  - md C:\projects\deps\libcurl
-  - cd C:\projects\deps\libcurl
-  - 7z x ..\libcurl.zip > nul
-  - cd ..
-  - md build
-  - copy C:\projects\deps\libcurl\dmd2\windows\bin64\libcurl.dll build\
-  - copy C:\projects\deps\libcurl\dmd2\windows\lib64\curl.lib build\
-  - set PATH=%CD%\build;%PATH%
-  - echo %PATH%
+  # - appveyor DownloadFile "https://dl.dropboxusercontent.com/s/jxwohqax4e2avyt/libcurl-7.48.0-WinSSL-zlib-x86-x64.zip?dl=0" -FileName libcurl.zip
+  # - md C:\projects\deps\libcurl
+  # - cd C:\projects\deps\libcurl
+  # - 7z x ..\libcurl.zip > nul
+  # - cd ..
+  # - md build
+  # - copy C:\projects\deps\libcurl\dmd2\windows\bin64\libcurl.dll build\
+  # - copy C:\projects\deps\libcurl\dmd2\windows\lib64\curl.lib build\
+  # - set PATH=%CD%\build;%PATH%
+  # - echo %PATH%
  
 
 
