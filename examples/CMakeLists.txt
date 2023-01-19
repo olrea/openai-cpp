@@ -15,7 +15,7 @@ endif()
 
 add_definitions(-DJSON_USE_IMPLICIT_CONVERSIONS=0)
 
-SET(CURL_MIN_VERSION "7.61.0")
+# SET(CURL_MIN_VERSION "7.61.0")
 find_package(CURL REQUIRED)
 
 include_directories(${CURL_INCLUDE_DIRS})
