@@ -5,7 +5,7 @@
 
 ## A lightweight header only modern C++ library
 
-The OpenAI C++ library provides convenient access to the [OpenAI API](https://beta.openai.com/docs/introduction) from applications written in the C++ language. 
+OpenAI C++ library is a **community-maintained** library which provides convenient access to the [OpenAI API](https://beta.openai.com/docs/introduction) from applications written in the C++ language. 
 
 ## Requirements
 
@@ -29,7 +29,8 @@ Note: *OpenAI-CPP* uses [Nlohmann Json](https://github.com/nlohmann/json) (v3.11
 The following code is available at [examples/00-showcase.cpp](examples/00-showcase.cpp)
 
 ```cpp
-auto& openai = openai::configure("xxx-xxx-xxx-xxx"); // "xxx-xxx-xxx-xxx" is your secret OpenAI API key
+// "xxx-xxx-xxx-xxx" is your secret OpenAI API key which should come from an env variable and not be hard coded.
+auto& openai = openai::configure("xxx-xxx-xxx-xxx"); 
 
 auto completion = openai::completion().create(R"(
 {
@@ -196,7 +197,7 @@ You can use a [std::reference_wrapper](http://en.cppreference.com/w/cpp/utility/
 
 ## Next steps
 
-- [ ] Set api key from env variable
+- [ ] Set api key from env variable `OPENAI_API_KEY` if token is empty
 - [ ] Provide convenient helpers
 
 ## Acknowledgment
