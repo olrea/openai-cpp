@@ -2,7 +2,7 @@
 
 [![Language](https://img.shields.io/badge/language-C++-blue.svg)](https://isocpp.org/)  [![Standard](https://img.shields.io/badge/c%2B%2B-11-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization) [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://opensource.org/licenses/MIT) [![Build Status](https://travis-ci.org/olrea/openaicpp.svg?branch=main)](https://travis-ci.org/olrea/openaicpp) [![Build status](https://ci.appveyor.com/api/projects/status/u2rf99lqt9ai9f6t?svg=true)](https://ci.appveyor.com/project/coin-au-carre/openai-cpp) [![GitHub version](https://badge.fury.io/gh/olrea%2Fopenaicpp.svg)](https://github.com/olrea/openaicpp/releases) 
 
-## A lightweight modern C++ library
+## A lightweight header only modern C++ library
 
 The OpenAI C++ library provides convenient access to the [OpenAI API](https://beta.openai.com/docs/introduction) from applications written in the C++ language. 
 
@@ -15,6 +15,7 @@ No special requirement. You should already have these :
 
 ## Installation
 
+The library consists of two files: `include/openaicpp/openai.hpp` and `include/openaicpp/json.hpp`.  
 Just copy the `include/openaicpp` folder in your project and you can `#include "openai.hpp"` to your code. That is all.  
 
 Note: *OpenAI-CPP* uses [Nlohmann Json](https://github.com/nlohmann/json) (v3.11.2) which is available in `include/json.hpp`. Feel free to use your own copy for faster compile time build. 
@@ -23,7 +24,7 @@ Note: *OpenAI-CPP* uses [Nlohmann Json](https://github.com/nlohmann/json) (v3.11
 
 ### Simple showcase
 
-The below code is available at [examples/00-showcase.cpp](examples/00-showcase.cpp)
+The following code is available at [examples/00-showcase.cpp](examples/00-showcase.cpp)
 
 ```c++
 auto& openai = openai::configure("xxx-xxx-xxx-xxx"); // "xxx-xxx-xxx-xxx" is your secret OpenAI API key
@@ -46,7 +47,8 @@ auto image = openai::image().create({
 std::cout << "Response is:\n" << image.dump(2) << '\n'; 
 ```
 
-The output received is in the form:
+The output received looks like:
+
 ```bash
 >> request: https://api.openai.com/v1/completions  {"max_tokens":7,"model":"text-davinci-003","prompt":"Say this is a test","temperature":0}
 Response is:
@@ -83,16 +85,16 @@ Response is:
 
 ![OpenAI-CPP attachments](doc/koala_violin.png?raw=true "OpenAI-CPP attachments")
 
-Since Openai::Json is a typedef to a [nlohmann::json](https://github.com/nlohmann/json), you have all the features of the latter one (conversions, STL like access, ...). For instance, `response["ok"]` will give `true`.
+Since `Openai::Json` is a typedef to a [nlohmann::json](https://github.com/nlohmann/json), you get all the features provided by the latter one (conversions, STL like access, ...). 
 
 ## A word about error handling
 
-By default, OpenAI-CPP will throw a runtime error exception if the curl request does not succeed. You are free to handle these exceptions the way you like.
+By default, *OpenAI-CPP* will throw a runtime error exception if the curl request does not succeed. You are free to handle these exceptions the way you like.
 You can prevent throw exceptions by setting `set_throw_exception(false)` (see example in [examples/09-instances.cpp](examples/09-instances.cpp)). If you do that, a warning will be displayed instead. 
 
 ## More control
 
-You can use the `openai::post` or `openai::get` methods to fully control what you are sending.
+You can use the `openai::post()` or `openai::get()` methods to fully control what you are sending (e.g. a new method is available in the API and not provided by `OpenAI-CPP` yet).
 
 
 ## Manage OpenAI-CPP instance
@@ -146,6 +148,8 @@ examples/[whatever]
 
 In your project, if you want a verbose output like when running the examples, add the following compilation flag:  
 `-DOPENAICPP_VERBOSE_OUTPUT=1`.
+
+For conveniency, you can put your api secret key in `build/token.txt`, to make the examples work. 
 
 ### Note for Windows users
 
