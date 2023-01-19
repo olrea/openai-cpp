@@ -5,7 +5,7 @@
 
 ## A lightweight header only modern C++ library
 
-OpenAI C++ library is a **community-maintained** library which provides convenient access to the [OpenAI API](https://beta.openai.com/docs/introduction) from applications written in the C++ language. 
+OpenAI-C++ library is a **community-maintained** library which provides convenient access to the [OpenAI API](https://openai.com/api/) from applications written in the C++ language. 
 
 ## Requirements
 
@@ -20,7 +20,7 @@ No special requirement. You should already have these :
 The library consists of two files: `include/openaicpp/openai.hpp` and `include/openaicpp/json.hpp`.  
 Just copy the `include/openaicpp` folder in your project and you can `#include "openai.hpp"` to your code. That is all.  
 
-Note: *OpenAI-CPP* uses [Nlohmann Json](https://github.com/nlohmann/json) (v3.11.2) which is available in `include/json.hpp`. Feel free to use your own copy for faster compile time build. 
+Note: **OpenAI-CPP** uses [Nlohmann Json](https://github.com/nlohmann/json) (v3.11.2) which is available in `include/json.hpp`. Feel free to use your own copy for faster compile time build. 
 
 ## Usage
 
@@ -35,25 +35,28 @@ export OPENAI_API_KEY='sk-...'
 ```
 
 ```cpp
-openai::start(); // Will use the api key provided by `OPENAI_API_KEY` environment variable
-// openai::start("your_API_key", "optional_organization"); // Or you can handle it by yourself
+#include "openai.hpp"
+#include <iostream>
 
-auto completion = openai::completion().create(R"(
-{
-    "model": "text-davinci-003",
-    "prompt": "Say this is a test",
-    "max_tokens": 7,
-    "temperature": 0
+int main() {
+    openai::start(); // Will use the api key provided by `OPENAI_API_KEY` environment variable
+    // openai::start("your_API_key", "optional_organization"); // Or you can handle it by yourself
+
+    auto completion = openai::completion().create(R"({
+        "model": "text-davinci-003",
+        "prompt": "Say this is a test",
+        "max_tokens": 7,
+        "temperature": 0
+    })"_json); // Using user-defined (raw) string literals
+    std::cout << "Response is:\n" << completion.dump(2) << '\n'; 
+
+    auto image = openai::image().create({
+        { "prompt", "A cute koala playing the violin"},
+        { "n", 1 },
+        { "size", "512x512" }
+    }); // Using initializer lists
+    std::cout << "Image URL is: " << image["data"][0]["url"] << '\n'; 
 }
-)"_json); // Using user-defined (raw) string literals
-std::cout << "Response is:\n" << completion.dump(2) << '\n'; 
-
-auto image = openai::image().create({
-    { "prompt", "A cute koala playing the violin"},
-    { "n", 1 },
-    { "size", "512x512" }
-}); // Using initializer lists
-std::cout << "Response is:\n" << image.dump(2) << '\n'; 
 ```
 
 The output received looks like:
@@ -80,16 +83,8 @@ Response is:
     "total_tokens": 12
   }
 }
->> request: https://api.openai.com/v1/images/generations  {"n":1,"prompt":"A cute koala playing the violin","size":"1024x1024"}
-Response is:
-{
-  "created": 1674121847,
-  "data": [
-    {
-      "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-WaIMDdGHNwJiXAmjegDHE6AM/user-bCrYDjR21ly46316ZbdgqvKf/img-fEnvTHYVuXPTeK3XaCvyeURJ.png?st=2023-01-19T08%3A52%3A08Z&se=2023-01-19T10%3A52%3A08Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-01-19T07%3A05%3A13Z&ske=2023-01-20T07%3A05%3A13Z&sks=b&skv=2021-08-06&sig=Dtdh5taessfocAw/LI0ngnF127E1dXVWlS3HTE1FoEw%3D"
-    }
-  ]
-}
+>> request: https://api.openai.com/v1/images/generations  {"n":1,"prompt":"A cute koala playing the violin","size":"512x512"}
+Image URL is: "https://oaidalleapiprodscus.blob.core.windows.net/private/org-WaIMDdGHNwJiXAmjegDHE6AM/user-bCrYDjR21ly46316ZbdgqvKf/img-sysAePXF2c8yu28AIoZLLmEG.png?st=2023-01-19T20%3A35%3A19Z&se=2023-01-19T22%3A35%3A19Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-01-19T18%3A10%3A41Z&ske=2023-01-20T18%3A10%3A41Z&sks=b&skv=2021-08-06&sig=nWkcGTTCsWigHHocYP%2BsyiV5FJL6izpAe3OVvX1GLuI%3D"
 ```
 
 ![OpenAI-CPP attachments](doc/koala_violin.png?raw=true "OpenAI-CPP attachments")
@@ -151,7 +146,7 @@ make
 
 ### A word about error handling
 
-By default, *OpenAI-CPP* will throw a runtime error exception if the curl request does not succeed. You are free to handle these exceptions the way you like.
+By default, **OpenAI-CPP** will throw a runtime error exception if the curl request does not succeed. You are free to handle these exceptions the way you like.
 You can prevent throw exceptions by setting `set_throw_exception(false)` (see example in [examples/09-instances.cpp](examples/09-instances.cpp)). If you do that, a warning will be displayed instead. 
 
 ### More control
@@ -161,30 +156,30 @@ You can use the `openai::post()` or `openai::get()` methods to fully control wha
 
 ### Manage OpenAI-CPP instance
 
-Here are two approaches to keep alive the *OpenAI-CPP* session in your program so you can use it anytime, anywhere.
+Here are two approaches to keep alive the **OpenAI-CPP** session in your program so you can use it anytime, anywhere.
 
 #### Use instance()
 
-This is the default behavior. *OpenAI-CPP* provides free convenient functions : `openai::start(const std::string& token)` and `openai::instance()`.
-Initialize and configure the OpenAI-CPP instance with:
+This is the default behavior. **OpenAI-CPP** provides free convenient functions : `openai::start(const std::string& token)` and `openai::instance()`.
+Initialize and configure the **OpenAI-CPP** instance with:
 
-```c++
+```cpp
 auto& openai = openai::start();
 ```
 
 When you are in another scope and you have lost the `openai` reference, you can grab it again with :  
 
-```c++
+```cpp
 auto& openai = openai::instance();
 ```
 
-It might not be the recommended way but since we generally want to handle only one OpenAI instance (one token), it is highly convenient. 
+It might not be the recommended way but since we generally want to handle only one OpenAI instance (one token), this approach is highly convenient. 
 
 #### Pass by reference
 
 An other approach is to pass the *OpenAI* instance by reference, store it, and call the appropriate methods when needed.
 
-```c++
+```cpp
 void bar(openai::OpenAI& openai) {
     openai.completion.create({
         {"model", "text-davinci-003"},
@@ -207,5 +202,5 @@ You can use a [std::reference_wrapper](http://en.cppreference.com/w/cpp/utility/
 
 ## Acknowledgment
 
-This work has been mainly inspired by [slacking](https://github.com/olrea/slacking) and the curl wrapper code from [cpr](https://github.com/libcpr/cpr).
+This work has been mainly inspired by [slacking](https://github.com/coin-au-carre/slacking) and the curl wrapper code from [cpr](https://github.com/libcpr/cpr).
 

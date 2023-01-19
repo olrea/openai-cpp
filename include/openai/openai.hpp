@@ -322,6 +322,7 @@ private:
 };
 
 
+// OpenAI
 class OpenAI {
 public:
     OpenAI(const std::string& token = "", const std::string& organization = "", bool throw_exception = true) 
@@ -423,6 +424,7 @@ public:
     std::string getBaseUrl() const {
         return base_url;
     }
+
 private:
     std::string base_url{ "https://api.openai.com/v1/" };
 
@@ -468,13 +470,7 @@ private:
             std::cerr << "[OpenAI] error. Reason: " << msg << '\n';
     }
 
-private:
-    Session                 session_;
-
 public:
-    std::string             token_;
-    std::string             organization_;
-    bool                    throw_exception_;
     CategoryModel           model     {*this};
     CategoryCompletion      completion{*this};
     CategoryEdit            edit      {*this};
@@ -484,6 +480,12 @@ public:
     CategoryFineTune        fine_tune {*this};
     CategoryModeration      moderation{*this};
     // CategoryEngine          engine{*this}; // Not handled since deprecated (use Model instead)
+
+private:
+    Session                 session_;
+    std::string             token_;
+    std::string             organization_;
+    bool                    throw_exception_;
 };
 
 inline std::string bool_to_string(const bool b) {

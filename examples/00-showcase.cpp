@@ -21,5 +21,5 @@ int main() {
         { "n", 1 },
         { "size", "512x512" }
     }); // Using initializer lists
-    std::cout << "Response is:\n" << image.dump(2) << '\n'; 
+    std::cout << "Image URL is: " << image["data"][0]["url"] << '\n'; 
 }
