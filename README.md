@@ -1,7 +1,7 @@
 # OpenAI C++ library 
 
 [![Language](https://img.shields.io/badge/language-C++-blue.svg)](https://isocpp.org/)  [![Standard](https://img.shields.io/badge/c%2B%2B-11-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization) [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://opensource.org/licenses/MIT) ![Github worflow](https://github.com/olrea/openai-cpp/actions/workflows/cmake.yml/badge.svg)
- [![Build status](https://ci.appveyor.com/api/projects/status/u2rf99lqt9ai9f6t?svg=true)](https://ci.appveyor.com/project/coin-au-carre/openai-cpp) [![GitHub version](https://badge.fury.io/gh/olrea%2Fopenaicpp.svg)](https://github.com/olrea/openai-cpp/releases) 
+ [![GitHub version](https://badge.fury.io/gh/olrea%2Fopenaicpp.svg)](https://github.com/olrea/openai-cpp/releases) 
 
 ## A lightweight header only modern C++ library
 
