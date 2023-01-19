@@ -1,6 +1,6 @@
 # OpenAI C++ library
 
-[![Language](https://img.shields.io/badge/language-C++-blue.svg)](https://isocpp.org/)  [![Standard](https://img.shields.io/badge/c%2B%2B-11-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization) [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://opensource.org/licenses/MIT) [![Build Status](https://travis-ci.org/coin-au-carre/openaicpp.svg?branch=main)](https://travis-ci.org/coin-au-carre/openaicpp) [![Build status](https://ci.appveyor.com/api/projects/status/9v928kd5cwd82pt9?svg=true)](https://ci.appveyor.com/project/coin-au-carre/openaicpp) [![GitHub version](https://badge.fury.io/gh/coin-au-carre%2Fopenaicpp.svg)](https://github.com/coin-au-carre/openaicpp/releases) [![Openai Channel](https://img.shields.io/badge/openai-@demo-pink.svg)](https://join.openai.com/t/olrea/shared_invite/zt-nj68r01f-bMq_QCrDRXBxvTVapmFXvg)
+[![Language](https://img.shields.io/badge/language-C++-blue.svg)](https://isocpp.org/)  [![Standard](https://img.shields.io/badge/c%2B%2B-11-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization) [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://opensource.org/licenses/MIT) [![Build Status](https://travis-ci.org/olrea/openaicpp.svg?branch=main)](https://travis-ci.org/olrea/openaicpp) [![Build status](https://ci.appveyor.com/api/projects/status/9v928kd5cwd82pt9?svg=true)](https://ci.appveyor.com/project/olrea/openaicpp) [![GitHub version](https://badge.fury.io/gh/olrea%2Fopenaicpp.svg)](https://github.com/olrea/openaicpp/releases) 
 
 ## A lightweight modern C++ library
 
@@ -179,5 +179,5 @@ make
 
 ## Acknowledgment
 
-This work has been inspired mainly inspired by [slacking](https://github.com/coin-au-carre/slacking) and the curl wrapper code from [cpr](https://github.com/libcpr/cpr).
+This work has been inspired mainly inspired by [slacking](https://github.com/olrea/slacking) and the curl wrapper code from [cpr](https://github.com/libcpr/cpr).
 
