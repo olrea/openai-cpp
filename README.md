@@ -1,4 +1,4 @@
-# OpenAI C++ library
+# OpenAI C++ library 
 
 [![Language](https://img.shields.io/badge/language-C++-blue.svg)](https://isocpp.org/)  [![Standard](https://img.shields.io/badge/c%2B%2B-11-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization) [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://opensource.org/licenses/MIT) [![Build Status](https://travis-ci.org/olrea/openaicpp.svg?branch=main)](https://travis-ci.org/olrea/openaicpp) [![Build status](https://ci.appveyor.com/api/projects/status/u2rf99lqt9ai9f6t?svg=true)](https://ci.appveyor.com/project/coin-au-carre/openai-cpp) [![GitHub version](https://badge.fury.io/gh/olrea%2Fopenaicpp.svg)](https://github.com/olrea/openaicpp/releases) 
 
@@ -87,6 +87,19 @@ Response is:
 
 Since `Openai::Json` is a typedef to a [nlohmann::json](https://github.com/nlohmann/json), you get all the features provided by the latter one (conversions, STL like access, ...). 
 
+
+### All examples reference
+
+- [00-showcase.cpp](examples/00-showcase.cpp)
+- [01-model.cpp](examples/01-model.cpp) - [API models](https://beta.openai.com/docs/api-reference/models)
+- [02-completion.cpp](examples/02-completion.cpp) - [API completions](https://beta.openai.com/docs/api-reference/completions)
+- [03-edit.cpp](examples/03-edit.cpp) - [API edits](https://beta.openai.com/docs/api-reference/edits)
+- [04-image.cpp](examples/04-image.cpp) - [API images](https://beta.openai.com/docs/api-reference/images)
+- [05-embedding.cpp](examples/05-embedding.cpp) - [API embeddings](https://beta.openai.com/docs/api-reference/embeddings)
+- [06-file.cpp](examples/06-file.cpp) - [API files](https://beta.openai.com/docs/api-reference/files)
+- [07-fine-tune.cpp](examples/07-fine-tune.cpp) - [API fine-tunes](https://beta.openai.com/docs/api-reference/fine-tunes)
+- [09-instances.cpp](examples/09-instances.cpp)
+
 ## A word about error handling
 
 By default, *OpenAI-CPP* will throw a runtime error exception if the curl request does not succeed. You are free to handle these exceptions the way you like.
@@ -94,7 +107,7 @@ You can prevent throw exceptions by setting `set_throw_exception(false)` (see ex
 
 ## More control
 
-You can use the `openai::post()` or `openai::get()` methods to fully control what you are sending (e.g. a new method is available in the API and not provided by `OpenAI-CPP` yet).
+You can use the `openai::post()` or `openai::get()` methods to fully control what you are sending (e.g. can be useful when a new method from OpenAI API is available and not provided by `OpenAI-CPP` yet).
 
 
 ## Manage OpenAI-CPP instance
@@ -116,7 +129,7 @@ When you are in another scope and you have lost the `openai` reference, you can 
 auto& openai = openai::instance();
 ```
 
-It might not be the recommended way but since we generally want to handle only one Openai instance (one token), it is highly convenient. You can refer to the example usage and  [examples/01-basic.cpp](examples/01-basic.cpp).
+It might not be the recommended way but since we generally want to handle only one OpenAI instance (one token), it is highly convenient. You can refer to the example usage and  [examples/01-basic.cpp](examples/01-basic.cpp).
 
 ### Pass by reference
 
@@ -125,8 +138,8 @@ An other approach is to pass the *OpenAI* instance by reference, store it, and c
 ```c++
 void bar(openai::OpenAI& openai) {
     openai.completion.create({
-            {"model", "text-davinci-003"},
-            {"prompt", "Say bar() function called"}
+        {"model", "text-davinci-003"},
+        {"prompt", "Say bar() function called"}
     });
 }
 
@@ -177,9 +190,8 @@ make
 
 ## Next steps
 
-- [ ] Add more examples
+- [ ] Set api key from env variable
 - [ ] Provide convenient helpers
-- [ ] Add delete routes
 
 ## Acknowledgment
 

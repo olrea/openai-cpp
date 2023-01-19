@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 // 
-// Copyright (c) 2023 Florian Dang
+// Copyright (c) 2023 Olrea, Florian Dang
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -85,9 +85,12 @@ public:
     }
 
     void setBody(const std::string& data);
-    Response get();
-    Response post();
-    Response makeRequest();
+    void setMultiformPart(const std::string& filepath, const std::string& purpose);
+    
+    Response getPrepare();
+    Response postPrepare(const std::string& contentType = "");
+    Response deletePrepare();
+    Response makeRequest(const std::string& contentType = "");
     std::string easyEscape(const std::string& text);
 
 private:
@@ -115,7 +118,29 @@ inline void Session::setBody(const std::string& data) {
     }
 }
 
-inline Response Session::get() {
+inline void Session::setMultiformPart(const std::string& filepath, const std::string& purpose) {
+    if (curl_) {
+        printf("filepath %s\n", filepath.c_str());
+        printf("purpose %s\n", purpose.c_str());
+        curl_mime *form = nullptr;
+        curl_mimepart *field = nullptr;
+
+        form = curl_mime_init(curl_);
+    
+        field = curl_mime_addpart(form);
+        curl_mime_name(field, "file");
+        curl_mime_filedata(field, filepath.c_str());
+
+        /* Fill in the purpose field */
+        field = curl_mime_addpart(form);
+        curl_mime_name(field, "purpose");
+        curl_mime_data(field, purpose.c_str(), CURL_ZERO_TERMINATED);
+
+        curl_easy_setopt(curl_, CURLOPT_MIMEPOST, form);
+    }
+}
+
+inline Response Session::getPrepare() {
     if (curl_) {
         curl_easy_setopt(curl_, CURLOPT_HTTPGET, 1L);
         curl_easy_setopt(curl_, CURLOPT_POST, 0L);
@@ -124,15 +149,29 @@ inline Response Session::get() {
     return makeRequest();
 }
 
-inline Response Session::post() {
+inline Response Session::postPrepare(const std::string& contentType) {
+    return makeRequest(contentType);
+}
+
+inline Response Session::deletePrepare() {
+    if (curl_) {
+        curl_easy_setopt(curl_, CURLOPT_HTTPGET, 0L);
+        curl_easy_setopt(curl_, CURLOPT_NOBODY, 0L);
+        curl_easy_setopt(curl_, CURLOPT_CUSTOMREQUEST, "DELETE");
+    }
     return makeRequest();
 }
 
-inline Response Session::makeRequest() {
+inline Response Session::makeRequest(const std::string& contentType) {
     std::lock_guard<std::mutex> lock(mutex_request_);
     
     struct curl_slist* headers = NULL;
-    headers = curl_slist_append(headers, "Content-Type: application/json");
+    if (!contentType.empty()) {
+        headers = curl_slist_append(headers, std::string{"Content-Type: " + contentType}.c_str());
+        if (contentType == "multipart/form-data") {
+            headers = curl_slist_append(headers, "Expect:");
+        }
+    }
     headers = curl_slist_append(headers, std::string{"Authorization: Bearer " + token_}.c_str());
     if (!organization_.empty()) {
         headers = curl_slist_append(headers, std::string{"OpenAI-Organization: " + organization_}.c_str());
@@ -152,7 +191,7 @@ inline Response Session::makeRequest() {
     std::string error_msg{};
     if(res_ != CURLE_OK) {
         is_error = true;
-        error_msg = "curl_easy_perform() failed " + std::string{curl_easy_strerror(res_)};
+        error_msg = "curl_easy_perform() failed: " + std::string{curl_easy_strerror(res_)};
         if (throw_exception_) 
             throw std::runtime_error(error_msg);
         else 
@@ -234,12 +273,17 @@ private:
     OpenAI& openai_;
 };
 
+struct FileRequest {
+    std::string file;
+    std::string purpose;
+};
+
 // https://beta.openai.com/docs/api-reference/files
 // Files are used to upload documents that can be used with features like Fine-tuning.
 struct CategoryFile {
     Json list();
     Json upload(Json input);
-    // Json del(const std::string& file); // TODO
+    Json del(const std::string& file); // TODO
     Json retrieve(const std::string& file_id);
     Json content(const std::string& file_id);
 
@@ -258,7 +302,7 @@ struct CategoryFineTune {
     Json content(const std::string& fine_tune_id);
     Json cancel(const std::string& fine_tune_id);
     Json events(const std::string& fine_tune_id);
-    // Json del(const std::string& model); // TODO
+    Json del(const std::string& model);
 
     CategoryFineTune(OpenAI& openai) : openai_{openai} {}
 
@@ -297,9 +341,11 @@ public:
     // void change_token(const std::string& token) { token_ = token; };
     void set_throw_exception(bool throw_exception) { throw_exception_ = throw_exception; }
 
-    Json post(const std::string& suffix, const std::string& data = "") {
-        setParameters(suffix, data);
-        auto response = session_.post();
+    void setMultiformPart(const std::string& filepath, const std::string& purpose) { session_.setMultiformPart(filepath, purpose); }
+
+    Json post(const std::string& suffix, const std::string& data, const std::string& contentType) {
+        setParameters(suffix, data, contentType);
+        auto response = session_.postPrepare(contentType);
         if (response.is_error){ 
             trigger_error(response.error_message);
         }
@@ -322,7 +368,7 @@ public:
 
     Json get(const std::string& suffix, const std::string& data = "") {
         setParameters(suffix, data);
-        auto response = session_.get();
+        auto response = session_.getPrepare();
         if (response.is_error) { trigger_error(response.error_message); }
 
         Json json{};
@@ -339,14 +385,28 @@ public:
         return json;
     }
 
-    Json post(const std::string& suffix, const Json& json) {
-        return post(suffix, json.dump());
+    Json post(const std::string& suffix, const Json& json, const std::string& contentType="application/json") {
+        return post(suffix, json.dump(), contentType);
     }
 
-    // Json get(const std::string& suffix, const Json& json) {
-        // auto elements = json_to_elements(json);
-        // return get(suffix, join(elements));
-    // }
+    Json del(const std::string& suffix) {
+        setParameters(suffix, "");
+        auto response = session_.deletePrepare();
+        if (response.is_error) { trigger_error(response.error_message); }
+
+        Json json{};
+        if (isJson(response.text)) {
+            json = Json::parse(response.text);
+            checkResponse(json);
+        }
+        else {
+          #if OPENAI_VERBOSE_OUTPUT
+            std::cerr << "Response is not a valid JSON\n";
+            std::cout << "<< " << response.text<< "\n";
+          #endif
+        }
+        return json;
+    }
 
     std::string easyEscape(const std::string& text) { return session_.easyEscape(text); }
 
@@ -362,10 +422,13 @@ public:
 private:
     std::string base_url{ "https://api.openai.com/v1/" };
 
-    void setParameters(const std::string& suffix, const std::string& data = "") {
+    void setParameters(const std::string& suffix, const std::string& data, const std::string& contentType = "") {
         auto complete_url =  base_url+ suffix;
         session_.setUrl(complete_url);
-        session_.setBody(data);
+
+        if (contentType != "multipart/form-data") {
+            session_.setBody(data);
+        }
 
 #if OPENAI_VERBOSE_OUTPUT
         std::cout << ">> request: "<< complete_url << "  " << data << '\n';
@@ -402,7 +465,7 @@ private:
     }
 
 private:
-    Session    session_;
+    Session                 session_;
 
 public:
     std::string             token_;
@@ -528,8 +591,14 @@ inline Json CategoryFile::list() {
     return openai_.get("files"); 
 }
 
-inline Json CategoryFile::upload(Json input) { 
-    return openai_.post("files", input); 
+inline Json CategoryFile::upload(Json input) {
+    openai_.setMultiformPart(input["file"].get<std::string>(), input["purpose"].get<std::string>());
+
+    return openai_.post("files", std::string{""}, "multipart/form-data"); 
+}
+
+inline Json CategoryFile::del(const std::string& file_id) { 
+    return openai_.del("files/" + file_id); 
 }
 
 inline Json CategoryFile::retrieve(const std::string& file_id) { 
@@ -548,20 +617,24 @@ inline Json CategoryFineTune::list() {
     return openai_.get("fine-tunes"); 
 }
 
-inline Json CategoryFineTune::retrieve(const std::string& file_id) { 
-    return openai_.get("fine-tunes/" + file_id); 
+inline Json CategoryFineTune::retrieve(const std::string& fine_tune_id) { 
+    return openai_.get("fine-tunes/" + fine_tune_id); 
 }
 
-inline Json CategoryFineTune::content(const std::string& file_id) { 
-    return openai_.get("fine-tunes/" + file_id + "/content"); 
+inline Json CategoryFineTune::content(const std::string& fine_tune_id) { 
+    return openai_.get("fine-tunes/" + fine_tune_id + "/content"); 
 }
 
-inline Json CategoryFineTune::cancel(const std::string& file_id) { 
-    return openai_.get("fine-tunes/" + file_id + "/cancel"); 
+inline Json CategoryFineTune::cancel(const std::string& fine_tune_id) { 
+    return openai_.post("fine-tunes/" + fine_tune_id + "/cancel", Json{}); 
 }
 
-inline Json CategoryFineTune::events(const std::string& file_id) { 
-    return openai_.get("fine-tunes/" + file_id + "/events"); 
+inline Json CategoryFineTune::events(const std::string& fine_tune_id) { 
+    return openai_.get("fine-tunes/" + fine_tune_id + "/events"); 
+}
+
+inline Json CategoryFineTune::del(const std::string& model) { 
+    return openai_.del("models/" + model); 
 }
 
 inline Json CategoryModeration::create(Json input) { 

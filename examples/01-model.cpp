@@ -21,8 +21,8 @@ int main() {
         auto& openai = openai::instance();
         auto models_other_approach = openai.model.list();
         std::cout << models_other_approach["data"][1] << std::endl;
-        // Helper member and free functions have the same signature
 
+        // Helper member and free functions have the same signature
         auto model = openai::model().retrieve("text-davinci-003");
         std::cout << model << std::endl;
     }

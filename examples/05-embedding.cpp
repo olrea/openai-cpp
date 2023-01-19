@@ -9,13 +9,10 @@ int main() {
     std::getline(infile, mytoken);
 
     openai::configure(mytoken); // Configure and launch the OpenAI instance
-    
-    {
-        auto image = openai::image().create(R"({
-            "prompt": "A cute baby sea otter",
-            "n": 2,
-            "size": "1024x1024"
-        })"_json);
-        std::cout << image.dump(2) << '\n'; 
-    }
+
+    auto res = openai::embedding().create({
+        { "model", "text-embedding-ada-002" },
+        { "input", "The food was delicious and the waiter..." }
+    }); 
+    std::cout << "Response is:\n" << res.dump(2) << '\n'; 
 }

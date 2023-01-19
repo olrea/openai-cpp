@@ -32,7 +32,9 @@ set (SOURCES_EXAMPLES
     02-completion
     03-edit
     04-image
+    05-embedding
     06-file
+    07-fine-tune
     09-instances
 )
 
@@ -42,7 +44,9 @@ set (TARGETS_EXAMPLES
     02-completion
     03-edit
     04-image
+    05-embedding
     06-file
+    07-fine-tune
     09-instances
 )
 
