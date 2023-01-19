@@ -1,0 +1,61 @@
+
+shallow_clone: true
+
+os:
+  - Visual Studio 2015
+
+build:
+  verbosity: detailed
+
+configuration:
+  - Debug
+
+branches:
+  except:
+    - /pr\/.+/
+
+install:
+  ############################################################################
+  # All external dependencies are installed in C:\projects\deps
+  ############################################################################
+  - mkdir C:\projects\deps
+  - cd C:\projects\deps
+
+ 
+
+  ############################################################################
+  # Install a recent CMake
+  ############################################################################
+  - set CMAKE_URL="https://cmake.org/files/v3.8/cmake-3.8.0-win64-x64.zip"
+  - appveyor DownloadFile %CMAKE_URL% -FileName cmake.zip
+  - 7z x cmake.zip -oC:\projects\deps > nul
+  - move C:\projects\deps\cmake-* C:\projects\deps\cmake # Move to a version-agnostic directory
+  - set PATH=C:\projects\deps\cmake\bin;%PATH%
+  - cmake --version
+
+  ############################################################################
+  # Install  libcurl
+  ############################################################################
+  - appveyor DownloadFile "https://dl.dropboxusercontent.com/s/jxwohqax4e2avyt/libcurl-7.48.0-WinSSL-zlib-x86-x64.zip?dl=0" -FileName libcurl.zip
+  - md C:\projects\deps\libcurl
+  - cd C:\projects\deps\libcurl
+  - 7z x ..\libcurl.zip > nul
+  - cd ..
+  - md build
+  - copy C:\projects\deps\libcurl\dmd2\windows\bin64\libcurl.dll build\
+  - copy C:\projects\deps\libcurl\dmd2\windows\lib64\curl.lib build\
+  - set PATH=%CD%\build;%PATH%
+  - echo %PATH%
+ 
+
+
+before_build:
+  - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
+  - cd C:\projects\openaicpp
+
+
+build_script:
+  - mkdir build
+  - cd build
+  - cmake .. -G "Visual Studio 14 2015 Win64"
+  - cmake --build . --target ALL_BUILD
