@@ -43,7 +43,7 @@ int main() {
     // You can create other openai instances with different tokens and parameters
     {
         openai::OpenAI another_openai_instance{"wrong apy key"};
-        // another_openai_instance.set_throw_exception(false); // You can set throw exception to false if you want
+        // another_openai_instance.setThrowException(false); // You can set throw exception to false if you want
         
         try {
             another_openai_instance.completion.create({

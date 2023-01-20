@@ -40,7 +40,7 @@ The following code is available at [examples/00-showcase.cpp](examples/00-showca
 
 int main() {
     openai::start(); // Will use the api key provided by `OPENAI_API_KEY` environment variable
-    // openai::start("your_API_key", "optional_organization"); // Or you can handle it by yourself
+    // openai::start("your_API_key", "optional_organization"); // Or you can handle it yourself
 
     auto completion = openai::completion().create(R"({
         "model": "text-davinci-003",
