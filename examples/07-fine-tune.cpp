@@ -1,6 +1,6 @@
 #include "openai.hpp"
 
-#include <fstream>
+#include <iostream>
 
 int main() {
     openai::start();

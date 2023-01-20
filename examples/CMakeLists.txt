@@ -2,10 +2,9 @@ cmake_minimum_required(VERSION 3.0)
 
 project(examples)
 
-# You can comment/Uncomment this line if you wish to have openaicpp display
+# You can comment/Uncomment this line if you wish to hide/show verbose output
 add_definitions(-DOPENAI_VERBOSE_OUTPUT=1)
 
-# option(OPENAICPP_VERBOSE_OUTPUT "If you wish to have openaicpp display"  OFF)
 option(CURL_STATIC_LINKING "Set to ON to build libcurl with static linking."  OFF)
   
 if(CURL_STATIC_LINKING)

@@ -1,7 +1,6 @@
 #include "openai.hpp"
 
-#include <fstream>
-#include <functional>
+#include <iostream>
 
 // A class which handles a openai instance by reference
 class Foo {
@@ -48,9 +47,9 @@ int main() {
         
         try {
             another_openai_instance.completion.create({
-            {"model", "text-davinci-003"},
-            {"prompt", "Say this should throw since token is invalid here"}
-        }); 
+                {"model", "text-davinci-003"},
+                {"prompt", "Say this should throw since token is invalid here"}
+            }); 
         }
         catch(std::exception const& e) {
             std::cerr << "02-basic failed purposely because of " << e.what() << "\n\n";

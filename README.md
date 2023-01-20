@@ -26,13 +26,13 @@ Note: **OpenAI-CPP** uses [Nlohmann Json](https://github.com/nlohmann/json) (v3.
 
 ### Simple showcase
 
-The following code is available at [examples/00-showcase.cpp](examples/00-showcase.cpp).
-
 The library needs to be configured with your account's secret key which is available on the [website](https://beta.openai.com/account/api-keys). It is recommended to set your `OPENAI_API_KEY` environment variable before using the library:
 
 ```bash
 export OPENAI_API_KEY='sk-...'
 ```
+
+The following code is available at [examples/00-showcase.cpp](examples/00-showcase.cpp).
 
 ```cpp
 #include "openai.hpp"
@@ -195,10 +195,6 @@ int main() {
 
 You can use a [std::reference_wrapper](http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper) as shown in [examples/09-instances.cpp](examples/09-instances.cpp). This strategy is useful if you have to manage several OpenAI-CPP instances.
 
-
-## Next steps
-
-- [ ] Provide convenient helpers
 
 ## Acknowledgment
 

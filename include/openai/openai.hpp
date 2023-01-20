@@ -23,6 +23,7 @@
 #ifndef OPENAI_HPP_
 #define OPENAI_HPP_
 
+
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -63,12 +64,20 @@ public:
         curl_global_init(CURL_GLOBAL_ALL);
         curl_ = curl_easy_init();
     }
+
     Session(bool throw_exception, std::string proxy_url) : throw_exception_{ throw_exception } {
         curl_global_init(CURL_GLOBAL_ALL);
         curl_ = curl_easy_init();
         setProxyUrl(proxy_url);
     }
-    ~Session() { curl_easy_cleanup(curl_); curl_global_cleanup(); }
+
+    ~Session() { 
+        curl_easy_cleanup(curl_); 
+        curl_global_cleanup();
+        if (mime_form_ != nullptr) {
+            curl_mime_free(mime_form_);
+        }
+    }
 
     void setUrl(const std::string& url) { url_ = url; }
 
@@ -102,6 +111,7 @@ private:
 private:
     CURL*       curl_;
     CURLcode    res_;
+    curl_mime   *mime_form_ = nullptr;
     std::string url_;
     std::string proxy_url_;
     std::string token_;
@@ -118,25 +128,27 @@ inline void Session::setBody(const std::string& data) {
     }
 }
 
+// TODO should be more generic for other multiform part
 inline void Session::setMultiformPart(const std::string& filepath, const std::string& purpose) {
+    // https://curl.se/libcurl/c/curl_mime_init.html
     if (curl_) {
-        printf("filepath %s\n", filepath.c_str());
-        printf("purpose %s\n", purpose.c_str());
-        curl_mime *form = nullptr;
+        if (mime_form_ != nullptr) {
+            curl_mime_free(mime_form_);
+            mime_form_ = nullptr;
+        }
         curl_mimepart *field = nullptr;
 
-        form = curl_mime_init(curl_);
+        mime_form_ = curl_mime_init(curl_);
     
-        field = curl_mime_addpart(form);
+        field = curl_mime_addpart(mime_form_);
         curl_mime_name(field, "file");
         curl_mime_filedata(field, filepath.c_str());
 
-        /* Fill in the purpose field */
-        field = curl_mime_addpart(form);
+        field = curl_mime_addpart(mime_form_);
         curl_mime_name(field, "purpose");
         curl_mime_data(field, purpose.c_str(), CURL_ZERO_TERMINATED);
 
-        curl_easy_setopt(curl_, CURLOPT_MIMEPOST, form);
+        curl_easy_setopt(curl_, CURLOPT_MIMEPOST, mime_form_);
     }
 }
 
@@ -191,11 +203,13 @@ inline Response Session::makeRequest(const std::string& contentType) {
     std::string error_msg{};
     if(res_ != CURLE_OK) {
         is_error = true;
-        error_msg = "curl_easy_perform() failed: " + std::string{curl_easy_strerror(res_)};
-        if (throw_exception_) 
+        error_msg = "OpenAI curl_easy_perform() failed: " + std::string{curl_easy_strerror(res_)};
+        if (throw_exception_) {
             throw std::runtime_error(error_msg);
-        else 
-            std::cerr << "[OpenAI] curl_easy_perform() failed " << error_msg << '\n';
+        }
+        else {
+            std::cerr << error_msg << '\n';
+        }
     }
 
     return { response_string, is_error, error_msg };
@@ -436,18 +450,19 @@ private:
             session_.setBody(data);
         }
 
-#if OPENAI_VERBOSE_OUTPUT
-        std::cout << ">> request: "<< complete_url << "  " << data << '\n';
-#endif
+        #if OPENAI_VERBOSE_OUTPUT
+            std::cout << "<< request: "<< complete_url << "  " << data << '\n';
+        #endif
     }
 
     void checkResponse(const Json& json) {
         if (json.count("error")) {
             auto reason = json["error"].dump();
             trigger_error(reason);
-#if SLACKING_VERBOSE_OUTPUT
-            std::cerr << "<< response:\n" << json.dump(2) << "\n";
-#endif
+
+            #if OPENAI_VERBOSE_OUTPUT
+                std::cerr << ">> response error :\n" << json.dump(2) << "\n";
+            #endif
         } 
     }
 
@@ -464,10 +479,12 @@ private:
     }
 
     void trigger_error(const std::string& msg) {
-        if (throw_exception_) 
+        if (throw_exception_) {
             throw std::runtime_error(msg);
-        else 
+        }
+        else {
             std::cerr << "[OpenAI] error. Reason: " << msg << '\n';
+        }
     }
 
 public:
