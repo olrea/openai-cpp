@@ -355,10 +355,10 @@ public:
     OpenAI(OpenAI&&)                    = delete;
     OpenAI& operator=(OpenAI&&)         = delete;
 
-    void set_proxy(const std::string& url) { session_.setProxyUrl(url); }
+    void setProxy(const std::string& url) { session_.setProxyUrl(url); }
 
     // void change_token(const std::string& token) { token_ = token; };
-    void set_throw_exception(bool throw_exception) { throw_exception_ = throw_exception; }
+    void setThrowException(bool throw_exception) { throw_exception_ = throw_exception; }
 
     void setMultiformPart(const std::string& filepath, const std::string& purpose) { session_.setMultiformPart(filepath, purpose); }
 
