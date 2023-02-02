@@ -216,8 +216,6 @@ inline Response Session::makeRequest(const std::string& contentType) {
 }
 
 inline std::string Session::easyEscape(const std::string& text) {
-    // char *encoded_output = curl_easy_escape(curl_, text.c_str(), static_cast<int>(text.length()));
-    // return std::string{encoded_output};
     char *encoded_output = curl_easy_escape(curl_, text.c_str(), static_cast<int>(text.length()));
     const auto str = std::string{ encoded_output };
     curl_free(encoded_output);
@@ -226,9 +224,6 @@ inline std::string Session::easyEscape(const std::string& text) {
 
 // forward declaration for category structures
 class  OpenAI;
-
-struct Channel;
-struct User;
 
 // https://beta.openai.com/docs/api-reference/models
 // List and describe the various models available in the API. You can refer to the Models documentation to understand what models are available and the differences between them.
@@ -668,7 +663,6 @@ inline Json CategoryModeration::create(Json input) {
 
 // Public interface
 
-// using _detail::operator<<;
 using _detail::OpenAI;
 
 // instance

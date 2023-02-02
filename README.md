@@ -11,7 +11,7 @@ OpenAI-C++ library is a **community-maintained** library which provides convenie
 
 No special requirement. You should already have these :
 
-+ C++11 compatible compiler. Tested with Clang (3.5, 3.6, 3.7), GCC (4.9, 5), MSCV (VS 14 2015, VS 15 2017)
++ C++11 compatible compiler.
 + [libcurl](https://curl.se/libcurl/)
 
 
@@ -26,7 +26,7 @@ Note: **OpenAI-CPP** uses [Nlohmann Json](https://github.com/nlohmann/json) (v3.
 
 ### Simple showcase
 
-The library needs to be configured with your account's secret key which is available on the [website](https://beta.openai.com/account/api-keys). It is recommended to set your `OPENAI_API_KEY` environment variable before using the library:
+The library needs to be configured with your account's secret key which is available on the [website](https://beta.openai.com/account/api-keys). It is recommended to set your `OPENAI_API_KEY` environment variable before using the library (or you can also set the API key directly in the code):
 
 ```bash
 export OPENAI_API_KEY='sk-...'
@@ -147,7 +147,7 @@ make
 ### A word about error handling
 
 By default, **OpenAI-CPP** will throw a runtime error exception if the curl request does not succeed. You are free to handle these exceptions the way you like.
-You can prevent throw exceptions by setting `set_throw_exception(false)` (see example in [examples/09-instances.cpp](examples/09-instances.cpp)). If you do that, a warning will be displayed instead. 
+You can prevent throw exceptions by setting `setThrowException(false)` (see example in [examples/09-instances.cpp](examples/09-instances.cpp)). If you do that, a warning will be displayed instead. 
 
 ### More control
 
@@ -200,3 +200,6 @@ You can use a [std::reference_wrapper](http://en.cppreference.com/w/cpp/utility/
 
 This work has been mainly inspired by [slacking](https://github.com/coin-au-carre/slacking) and the curl wrapper code from [cpr](https://github.com/libcpr/cpr).
 
+### Sponsor
+
+[OLREA](https://www.olrea.fr/)
