@@ -35,6 +35,7 @@ set (SOURCES_EXAMPLES
     06-file
     07-fine-tune
     09-instances
+    10-chat
 )
 
 set (TARGETS_EXAMPLES
@@ -47,6 +48,7 @@ set (TARGETS_EXAMPLES
     06-file
     07-fine-tune
     09-instances
+    10-chat
 )
 
 foreach( name ${TARGETS_EXAMPLES} )
