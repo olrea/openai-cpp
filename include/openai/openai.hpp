@@ -247,6 +247,18 @@ private:
     OpenAI& openai_;
 };
 
+// https://beta.openai.com/docs/api-reference/chat
+// Given a prompt, the model will return one or more predicted chat completions.
+struct CategoryChat {
+    Json create(Json input);
+
+    CategoryChat(OpenAI& openai) : openai_{openai} {}
+
+private:
+    OpenAI& openai_;
+};
+
+
 // https://beta.openai.com/docs/api-reference/edits
 // Given a prompt and an instruction, the model will return an edited version of the prompt.
 struct CategoryEdit {
@@ -491,6 +503,7 @@ public:
     CategoryFile            file      {*this};
     CategoryFineTune        fine_tune {*this};
     CategoryModeration      moderation{*this};
+    CategoryChat            chat      {*this};
     // CategoryEngine          engine{*this}; // Not handled since deprecated (use Model instead)
 
 private:
@@ -531,6 +544,10 @@ inline CategoryModel& model() {
 
 inline CategoryCompletion& completion() {
     return instance().completion;
+}
+
+inline CategoryChat& chat() {
+    return instance().chat;
 }
 
 inline CategoryEdit& edit() {
@@ -575,6 +592,12 @@ inline Json CategoryModel::retrieve(const std::string& model) {
 // Creates a completion for the provided prompt and parameters
 inline Json CategoryCompletion::create(Json input) {
     return openai_.post("completions", input);
+}
+
+// POST https://api.openai.com/v1/chat/completions
+// Creates a chat completion for the provided prompt and parameters
+inline Json CategoryChat::create(Json input) {
+    return openai_.post("chat/completions", input);
 }
 
 // POST https://api.openai.com/v1/edits
@@ -682,6 +705,7 @@ using _detail::embedding;
 using _detail::file;
 using _detail::fineTune;
 using _detail::moderation;
+using _detail::chat;
 
 using _detail::Json;
 
