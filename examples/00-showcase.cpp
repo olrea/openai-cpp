@@ -17,7 +17,7 @@ int main() {
     std::cout << "Response is:\n" << completion.dump(2) << '\n'; 
 
     auto image = openai::image().create({
-        { "prompt", "A cute koala playing the violin"},
+        { "prompt", "A logo with a cello in a heart"},
         { "n", 1 },
         { "size", "512x512" }
     }); // Using initializer lists

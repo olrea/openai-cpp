@@ -94,7 +94,7 @@ public:
     }
 
     void setBody(const std::string& data);
-    void setMultiformPart(const std::string& filepath, const std::string& purpose);
+    void setMultiformPart(const std::string& filepath, const std::map<std::string, std::string>& fields);
     
     Response getPrepare();
     Response postPrepare(const std::string& contentType = "");
@@ -129,7 +129,7 @@ inline void Session::setBody(const std::string& data) {
 }
 
 // TODO should be more generic for other multiform part
-inline void Session::setMultiformPart(const std::string& filepath, const std::string& purpose) {
+inline void Session::setMultiformPart(const std::string& filepath, const std::map<std::string, std::string>& fields) {
     // https://curl.se/libcurl/c/curl_mime_init.html
     if (curl_) {
         if (mime_form_ != nullptr) {
@@ -144,10 +144,12 @@ inline void Session::setMultiformPart(const std::string& filepath, const std::st
         curl_mime_name(field, "file");
         curl_mime_filedata(field, filepath.c_str());
 
-        field = curl_mime_addpart(mime_form_);
-        curl_mime_name(field, "purpose");
-        curl_mime_data(field, purpose.c_str(), CURL_ZERO_TERMINATED);
-
+        for (const auto &field_pair : fields) {
+            field = curl_mime_addpart(mime_form_);
+            curl_mime_name(field, field_pair.first.c_str());
+            curl_mime_data(field, field_pair.second.c_str(), CURL_ZERO_TERMINATED);
+        }
+        
         curl_easy_setopt(curl_, CURLOPT_MIMEPOST, mime_form_);
     }
 }
@@ -225,7 +227,7 @@ inline std::string Session::easyEscape(const std::string& text) {
 // forward declaration for category structures
 class  OpenAI;
 
-// https://beta.openai.com/docs/api-reference/models
+// https://platform.openai.com/docs/api-reference/models
 // List and describe the various models available in the API. You can refer to the Models documentation to understand what models are available and the differences between them.
 struct CategoryModel {
     Json list();
@@ -236,7 +238,7 @@ private:
     OpenAI& openai_;
 };
 
-// https://beta.openai.com/docs/api-reference/completions
+// https://platform.openai.com/docs/api-reference/completions
 // Given a prompt, the model will return one or more predicted completions, and can also return the probabilities of alternative tokens at each position.
 struct CategoryCompletion {
     Json create(Json input);
@@ -247,7 +249,7 @@ private:
     OpenAI& openai_;
 };
 
-// https://beta.openai.com/docs/api-reference/chat
+// https://platform.openai.com/docs/api-reference/chat
 // Given a prompt, the model will return one or more predicted chat completions.
 struct CategoryChat {
     Json create(Json input);
@@ -258,8 +260,19 @@ private:
     OpenAI& openai_;
 };
 
+// https://platform.openai.com/docs/api-reference/audio
+// Learn how to turn audio into text.
+struct CategoryAudio {
+    Json transcribe(Json input);
+    Json translate(Json input);
 
-// https://beta.openai.com/docs/api-reference/edits
+    CategoryAudio(OpenAI& openai) : openai_{openai} {}
+
+private:
+    OpenAI& openai_;
+};
+
+// https://platform.openai.com/docs/api-reference/edits
 // Given a prompt and an instruction, the model will return an edited version of the prompt.
 struct CategoryEdit {
     Json create(Json input);
@@ -271,7 +284,7 @@ private:
 };
 
 
-// https://beta.openai.com/docs/api-reference/images
+// https://platform.openai.com/docs/api-reference/images
 // Given a prompt and/or an input image, the model will generate a new image.
 struct CategoryImage {
     Json create(Json input);
@@ -284,7 +297,7 @@ private:
     OpenAI& openai_;
 };
 
-// https://beta.openai.com/docs/api-reference/embeddings
+// https://platform.openai.com/docs/api-reference/embeddings
 // Get a vector representation of a given input that can be easily consumed by machine learning models and algorithms.
 struct CategoryEmbedding {
     Json create(Json input);
@@ -299,7 +312,7 @@ struct FileRequest {
     std::string purpose;
 };
 
-// https://beta.openai.com/docs/api-reference/files
+// https://platform.openai.com/docs/api-reference/files
 // Files are used to upload documents that can be used with features like Fine-tuning.
 struct CategoryFile {
     Json list();
@@ -314,7 +327,7 @@ private:
     OpenAI& openai_;
 };
 
-// https://beta.openai.com/docs/api-reference/fine-tunes
+// https://platform.openai.com/docs/api-reference/fine-tunes
 // Manage fine-tuning jobs to tailor a model to your specific training data.
 struct CategoryFineTune {
     Json create(Json input);
@@ -331,7 +344,7 @@ private:
     OpenAI& openai_;
 };
 
-// https://beta.openai.com/docs/api-reference/moderations
+// https://platform.openai.com/docs/api-reference/moderations
 // Given a input text, outputs if the model classifies it as violating OpenAI's content policy.
 struct CategoryModeration {
     Json create(Json input);
@@ -367,7 +380,7 @@ public:
     // void change_token(const std::string& token) { token_ = token; };
     void setThrowException(bool throw_exception) { throw_exception_ = throw_exception; }
 
-    void setMultiformPart(const std::string& filepath, const std::string& purpose) { session_.setMultiformPart(filepath, purpose); }
+    void setMultiformPart(const std::string& filepath, const std::map<std::string, std::string>& fields) { session_.setMultiformPart(filepath, fields); }
 
     Json post(const std::string& suffix, const std::string& data, const std::string& contentType) {
         setParameters(suffix, data, contentType);
@@ -504,6 +517,7 @@ public:
     CategoryFineTune        fine_tune {*this};
     CategoryModeration      moderation{*this};
     CategoryChat            chat      {*this};
+    CategoryAudio           audio     {*this};
     // CategoryEngine          engine{*this}; // Not handled since deprecated (use Model instead)
 
 private:
@@ -548,6 +562,10 @@ inline CategoryCompletion& completion() {
 
 inline CategoryChat& chat() {
     return instance().chat;
+}
+
+inline CategoryAudio& audio() {
+    return instance().audio;
 }
 
 inline CategoryEdit& edit() {
@@ -600,7 +618,27 @@ inline Json CategoryChat::create(Json input) {
     return openai_.post("chat/completions", input);
 }
 
-// POST https://api.openai.com/v1/edits
+// POST https://api.openai.com/v1/audio/transcriptions
+// Transcribes audio into the input language.
+inline Json CategoryAudio::transcribe(Json input) {
+    openai_.setMultiformPart(input["file"].get<std::string>(), 
+        std::map<std::string, std::string>{{"model", input["model"].get<std::string>()}}
+    );
+
+    return openai_.post("audio/transcriptions", std::string{""}, "multipart/form-data"); 
+}
+
+// POST https://api.openai.com/v1/audio/translations
+// Translates audio into into English..
+inline Json CategoryAudio::translate(Json input) {
+    openai_.setMultiformPart(input["file"].get<std::string>(), 
+        std::map<std::string, std::string>{{"model", input["model"].get<std::string>()}}
+    );
+
+    return openai_.post("audio/translations", std::string{""}, "multipart/form-data"); 
+}
+
+// POST https://api.openai.com/v1/translations
 // Creates a new edit for the provided input, instruction, and parameters
 inline Json CategoryEdit::create(Json input) {
     return openai_.post("edits", input);
@@ -633,7 +671,9 @@ inline Json CategoryFile::list() {
 }
 
 inline Json CategoryFile::upload(Json input) {
-    openai_.setMultiformPart(input["file"].get<std::string>(), input["purpose"].get<std::string>());
+    openai_.setMultiformPart(input["file"].get<std::string>(), 
+        std::map<std::string, std::string>{{"purpose", input["purpose"].get<std::string>()}}
+    );
 
     return openai_.post("files", std::string{""}, "multipart/form-data"); 
 }
@@ -706,6 +746,7 @@ using _detail::file;
 using _detail::fineTune;
 using _detail::moderation;
 using _detail::chat;
+using _detail::audio;
 
 using _detail::Json;
 
