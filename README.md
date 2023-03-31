@@ -26,7 +26,7 @@ Note: **OpenAI-CPP** uses [Nlohmann Json](https://github.com/nlohmann/json) (v3.
 
 ### Simple showcase
 
-The library needs to be configured with your account's secret key which is available on the [website](https://beta.openai.com/account/api-keys). It is recommended to set your `OPENAI_API_KEY` environment variable before using the library (or you can also set the API key directly in the code):
+The library needs to be configured with your account's secret key which is available on the [website](https://platform.openai.com/account/api-keys). It is recommended to set your `OPENAI_API_KEY` environment variable before using the library (or you can also set the API key directly in the code):
 
 ```bash
 export OPENAI_API_KEY='sk-...'
@@ -92,18 +92,46 @@ Image URL is: "https://oaidalleapiprodscus.blob.core.windows.net/private/org-WaI
 Since `Openai::Json` is a typedef to a [nlohmann::json](https://github.com/nlohmann/json), you get all the features provided by the latter one (conversions, STL like access, ...). 
 
 
-### All examples reference
+## Example references
+
+#### Usage examples
 
 - [00-showcase.cpp](examples/00-showcase.cpp)
-- [01-model.cpp](examples/01-model.cpp) · [API models](https://beta.openai.com/docs/api-reference/models)
-- [02-completion.cpp](examples/02-completion.cpp) · [API completions](https://beta.openai.com/docs/api-reference/completions)
-- [03-edit.cpp](examples/03-edit.cpp) · [API edits](https://beta.openai.com/docs/api-reference/edits)
-- [04-image.cpp](examples/04-image.cpp) · [API images](https://beta.openai.com/docs/api-reference/images)
-- [05-embedding.cpp](examples/05-embedding.cpp) · [API embeddings](https://beta.openai.com/docs/api-reference/embeddings)
-- [06-file.cpp](examples/06-file.cpp) · [API files](https://beta.openai.com/docs/api-reference/files)
-- [07-fine-tune.cpp](examples/07-fine-tune.cpp) · [API fine-tunes](https://beta.openai.com/docs/api-reference/fine-tunes)
 - [09-instances.cpp](examples/09-instances.cpp)
 
+### API examples
+
+- [01-model.cpp](examples/01-model.cpp) · [API models](https://platform.openai.com/docs/api-reference/models)
+  - [List models](https://platform.openai.com/docs/api-reference/models/list) ✅
+  - [Retrieve model](https://platform.openai.com/docs/api-reference/models/retrieve) ✅
+- [02-completion.cpp](examples/02-completion.cpp) · [API completions](https://platform.openai.com/docs/api-reference/completions)
+  - [Create completion](https://platform.openai.com/docs/api-reference/completions/create) ✅
+- [03-edit.cpp](examples/03-edit.cpp) · [API edits](https://platform.openai.com/docs/api-reference/edits)
+  - [Create edit](https://platform.openai.com/docs/api-reference/edits/create) ✅
+- [04-image.cpp](examples/04-image.cpp) · [API images](https://platform.openai.com/docs/api-reference/images)
+  - [Create image](https://platform.openai.com/docs/api-reference/images) ✅
+  - [Create image edit](https://platform.openai.com/docs/api-reference/images/create-edit) ✅
+  - [Create image variation](https://platform.openai.com/docs/api-reference/images/create-variation) ✅
+- [05-embedding.cpp](examples/05-embedding.cpp) · [API embeddings](https://platform.openai.com/docs/api-reference/embeddings)
+  - [Create embeddings](https://platform.openai.com/docs/api-reference/embeddings/create) ✅
+- [06-file.cpp](examples/06-file.cpp) · [API files](https://platform.openai.com/docs/api-reference/files)
+  - [List file](https://platform.openai.com/docs/api-reference/files/list) ✅
+  - [Upload file](https://platform.openai.com/docs/api-reference/files/upload) ✅
+  - [Delete file](https://platform.openai.com/docs/api-reference/files/delete) ✅
+  - [Retrieve file](https://platform.openai.com/docs/api-reference/files/retrieve) ✅
+  - [Retrieve file content](https://platform.openai.com/docs/api-reference/files/retrieve-content) ✅
+- [07-fine-tune.cpp](examples/07-fine-tune.cpp) · [API fine-tunes](https://platform.openai.com/docs/api-reference/fine-tunes)
+  - [Create fine-tune](https://platform.openai.com/docs/api-reference/fine-tunes/create) ✅
+  - [List fine-tune](https://platform.openai.com/docs/api-reference/fine-tunes/list) ✅
+  - [Retrieve fine-tune](https://platform.openai.com/docs/api-reference/fine-tunes/retrieve) ✅
+  - [Cancel fine-tune](https://platform.openai.com/docs/api-reference/fine-tunes/cancel) ✅
+  - [List fine-tune events](https://platform.openai.com/docs/api-reference/fine-tunes/events) ✅
+  - [Delete fine-tune model](https://platform.openai.com/docs/api-reference/fine-tunes/delete-model) ✅
+- [10-chat.cpp](examples/10-chat.cpp) · [API Chat](https://platform.openai.com/docs/api-reference/chat)
+  - [Create chat completion](https://platform.openai.com/docs/api-reference/chat/create) ✅
+- [11-audio.cpp](examples/11-audio.cpp) · [API Audio](https://platform.openai.com/docs/api-reference/audio)
+  - [Create transcription](https://platform.openai.com/docs/api-reference/audio/create) ✅
+  - [Create translation](https://platform.openai.com/docs/api-reference/audio/create) ✅
 
 ## Build the examples
 
