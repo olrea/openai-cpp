@@ -94,7 +94,7 @@ public:
     }
 
     void setBody(const std::string& data);
-    void setMultiformPart(const std::string& filepath, const std::string& purpose);
+    void setMultiformPart(const std::string& filepath, const std::map<std::string, std::string>& fields);
     
     Response getPrepare();
     Response postPrepare(const std::string& contentType = "");
@@ -129,7 +129,7 @@ inline void Session::setBody(const std::string& data) {
 }
 
 // TODO should be more generic for other multiform part
-inline void Session::setMultiformPart(const std::string& filepath, const std::string& purpose) {
+inline void Session::setMultiformPart(const std::string& filepath, const std::map<std::string, std::string>& fields) {
     // https://curl.se/libcurl/c/curl_mime_init.html
     if (curl_) {
         if (mime_form_ != nullptr) {
@@ -144,10 +144,17 @@ inline void Session::setMultiformPart(const std::string& filepath, const std::st
         curl_mime_name(field, "file");
         curl_mime_filedata(field, filepath.c_str());
 
-        field = curl_mime_addpart(mime_form_);
-        curl_mime_name(field, "purpose");
-        curl_mime_data(field, purpose.c_str(), CURL_ZERO_TERMINATED);
-
+        for (const auto &field_pair : fields) {
+            field = curl_mime_addpart(mime_form_);
+            curl_mime_name(field, field_pair.first.c_str());
+            // if (std::next(it) == fields.end()) {
+            //     curl_mime_data(field, it->second.c_str());
+            // }
+            // else { // If it last element we terminate
+                curl_mime_data(field, field_pair.second.c_str(), CURL_ZERO_TERMINATED);
+            // }
+        }
+        
         curl_easy_setopt(curl_, CURLOPT_MIMEPOST, mime_form_);
     }
 }
@@ -378,7 +385,7 @@ public:
     // void change_token(const std::string& token) { token_ = token; };
     void setThrowException(bool throw_exception) { throw_exception_ = throw_exception; }
 
-    void setMultiformPart(const std::string& filepath, const std::string& purpose) { session_.setMultiformPart(filepath, purpose); }
+    void setMultiformPart(const std::string& filepath, const std::map<std::string, std::string>& fields) { session_.setMultiformPart(filepath, fields); }
 
     Json post(const std::string& suffix, const std::string& data, const std::string& contentType) {
         setParameters(suffix, data, contentType);
@@ -619,13 +626,21 @@ inline Json CategoryChat::create(Json input) {
 // POST https://api.openai.com/v1/audio/transcriptions
 // Transcribes audio into the input language.
 inline Json CategoryAudio::transcribe(Json input) {
-    return openai_.post("audio/transcriptions", input);
+    openai_.setMultiformPart(input["file"].get<std::string>(), 
+        std::map<std::string, std::string>{{"model", input["model"].get<std::string>()}}
+    );
+
+    return openai_.post("audio/transcriptions", std::string{""}, "multipart/form-data"); 
 }
 
 // POST https://api.openai.com/v1/audio/translations
 // Translates audio into into English..
 inline Json CategoryAudio::translate(Json input) {
-    return openai_.post("audio/translations", input);
+    openai_.setMultiformPart(input["file"].get<std::string>(), 
+        std::map<std::string, std::string>{{"model", input["model"].get<std::string>()}}
+    );
+
+    return openai_.post("audio/translations", std::string{""}, "multipart/form-data"); 
 }
 
 // POST https://api.openai.com/v1/translations
@@ -661,7 +676,9 @@ inline Json CategoryFile::list() {
 }
 
 inline Json CategoryFile::upload(Json input) {
-    openai_.setMultiformPart(input["file"].get<std::string>(), input["purpose"].get<std::string>());
+    openai_.setMultiformPart(input["file"].get<std::string>(), 
+        std::map<std::string, std::string>{{"purpose", input["purpose"].get<std::string>()}}
+    );
 
     return openai_.post("files", std::string{""}, "multipart/form-data"); 
 }
