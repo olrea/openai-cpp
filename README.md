@@ -195,6 +195,10 @@ int main() {
 
 You can use a [std::reference_wrapper](http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper) as shown in [examples/09-instances.cpp](examples/09-instances.cpp). This strategy is useful if you have to manage several OpenAI-CPP instances.
 
+## License
+
+[MIT](LICENSE.md)
+
 
 ## Acknowledgment
 

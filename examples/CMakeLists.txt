@@ -36,6 +36,7 @@ set (SOURCES_EXAMPLES
     07-fine-tune
     09-instances
     10-chat
+    11-audio
 )
 
 set (TARGETS_EXAMPLES
@@ -49,6 +50,7 @@ set (TARGETS_EXAMPLES
     07-fine-tune
     09-instances
     10-chat
+    11-audio
 )
 
 foreach( name ${TARGETS_EXAMPLES} )
