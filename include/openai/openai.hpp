@@ -147,12 +147,7 @@ inline void Session::setMultiformPart(const std::string& filepath, const std::ma
         for (const auto &field_pair : fields) {
             field = curl_mime_addpart(mime_form_);
             curl_mime_name(field, field_pair.first.c_str());
-            // if (std::next(it) == fields.end()) {
-            //     curl_mime_data(field, it->second.c_str());
-            // }
-            // else { // If it last element we terminate
-                curl_mime_data(field, field_pair.second.c_str(), CURL_ZERO_TERMINATED);
-            // }
+            curl_mime_data(field, field_pair.second.c_str(), CURL_ZERO_TERMINATED);
         }
         
         curl_easy_setopt(curl_, CURLOPT_MIMEPOST, mime_form_);
