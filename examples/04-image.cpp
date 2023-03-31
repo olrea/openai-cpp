@@ -11,4 +11,8 @@ int main() {
         "size": "512x512"
     })"_json);
     std::cout << image.dump(2) << '\n'; 
+
+    // Are also available (TODO examples)
+    // openai::image().edit(R"({}))
+    // openai::image().variation(R"({}))
 }
