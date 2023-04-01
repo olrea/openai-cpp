@@ -141,8 +141,7 @@ cmake .. && make
 examples/[whatever]
 ```
 
-In your project, if you want a verbose output like when running the examples, add the following compilation flag:  
-`-DOPENAICPP_VERBOSE_OUTPUT=1`.
+In your project, if you want to hide verbose output like when running the examples, comment the line in `examples/CMakeLists.txt` file: `// add_definitions(-DOPENAI_VERBOSE_OUTPUT=1)`.
 
 For conveniency, you can put your api secret key in `build/token.txt`, to make the examples work. 
 

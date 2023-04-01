@@ -24,6 +24,10 @@
 #define OPENAI_HPP_
 
 
+#if OPENAI_VERBOSE_OUTPUT
+#pragma message ("OPENAI_VERBOSE_OUTPUT is ON")
+#endif
+
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -31,18 +35,15 @@
 #include <sstream>
 #include <mutex>
 #include <cstdlib>
+#include <map>
 
 #ifndef CURL_STATICLIB
-# include <curl/curl.h>
+#include <curl/curl.h>
 #else 
-# include "curl/curl.h"
+#include "curl/curl.h"
 #endif
 
 #include "json.hpp"  // nlohmann/json
-
-#if OPENAI_VERBOSE_OUTPUT
-# pragma message ("OPENAI_VERBOSE_OUTPUT is ON")
-#endif
 
 namespace openai {
 

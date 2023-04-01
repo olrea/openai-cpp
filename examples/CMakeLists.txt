@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.0)
 project(examples)
 
 # You can comment/Uncomment this line if you wish to hide/show verbose output
-add_definitions(-DOPENAI_VERBOSE_OUTPUT=1)
+# add_definitions(-DOPENAI_VERBOSE_OUTPUT=1)
 
 option(CURL_STATIC_LINKING "Set to ON to build libcurl with static linking."  OFF)
   
