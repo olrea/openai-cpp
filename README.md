@@ -5,13 +5,14 @@
 
 ## A lightweight header only modern C++ library
 
-OpenAI-C++ library is a **community-maintained** library which provides convenient access to the [OpenAI API](https://openai.com/api/) from applications written in the C++ language. 
+OpenAI-C++ library is a **community-maintained** library which provides convenient access to the [OpenAI API](https://openai.com/api/) from applications written in the C++ language.  
+The library is small with two header files (only one if you already use Nlohmann Json).
 
 ## Requirements
 
 No special requirement. You should already have these :
 
-+ C++11 compatible compiler.
++ C++11/C++14/C++17/C++20 compatible compiler
 + [libcurl](https://curl.se/libcurl/)
 
 ## OpenAI C++ current implementation
