@@ -92,9 +92,9 @@ Image URL is: "https://oaidalleapiprodscus.blob.core.windows.net/private/org-WaI
 Since `Openai::Json` is a typedef to a [nlohmann::json](https://github.com/nlohmann/json), you get all the features provided by the latter one (conversions, STL like access, ...). 
 
 
-## Example references
+## Examples reference
 
-#### Usage examples
+### Usage examples
 
 - [00-showcase.cpp](examples/00-showcase.cpp)
 - [09-instances.cpp](examples/09-instances.cpp)
@@ -133,7 +133,7 @@ Since `Openai::Json` is a typedef to a [nlohmann::json](https://github.com/nlohm
   - [Create transcription](https://platform.openai.com/docs/api-reference/audio/create) ✅
   - [Create translation](https://platform.openai.com/docs/api-reference/audio/create) ✅
 
-## Build the examples
+### Build the examples
 
 ```bash
 mkdir build && cd build
@@ -146,7 +146,7 @@ In your project, if you want a verbose output like when running the examples, ad
 
 For conveniency, you can put your api secret key in `build/token.txt`, to make the examples work. 
 
-### Note for Windows users
+#### Note for Windows users
 
 If you are using WSL then you are not concerned by the following. 
 
@@ -170,9 +170,9 @@ cmake -G "MSYS Makefiles" -D CMAKE_CXX_COMPILER=g++ ..
 make
 ```
 
-## Advanced usage
+### Advanced usage
 
-### A word about error handling
+#### A word about error handling
 
 By default, **OpenAI-CPP** will throw a runtime error exception if the curl request does not succeed. You are free to handle these exceptions the way you like.
 You can prevent throw exceptions by setting `setThrowException(false)` (see example in [examples/09-instances.cpp](examples/09-instances.cpp)). If you do that, a warning will be displayed instead. 
@@ -182,11 +182,11 @@ You can prevent throw exceptions by setting `setThrowException(false)` (see exam
 You can use the `openai::post()` or `openai::get()` methods to fully control what you are sending (e.g. can be useful when a new method from OpenAI API is available and not provided by `OpenAI-CPP` yet).
 
 
-### Manage OpenAI-CPP instance
+#### Manage OpenAI-CPP instance
 
 Here are two approaches to keep alive the **OpenAI-CPP** session in your program so you can use it anytime, anywhere.
 
-#### Use instance()
+##### Use instance()
 
 This is the default behavior. **OpenAI-CPP** provides free convenient functions : `openai::start(const std::string& token)` and `openai::instance()`.
 Initialize and configure the **OpenAI-CPP** instance with:
@@ -203,7 +203,7 @@ auto& openai = openai::instance();
 
 It might not be the recommended way but since we generally want to handle only one OpenAI instance (one token), this approach is highly convenient. 
 
-#### Pass by reference
+##### Pass by reference
 
 An other approach is to pass the *OpenAI* instance by reference, store it, and call the appropriate methods when needed.
 
@@ -232,6 +232,6 @@ You can use a [std::reference_wrapper](http://en.cppreference.com/w/cpp/utility/
 
 This work has been mainly inspired by [slacking](https://github.com/coin-au-carre/slacking) and the curl wrapper code from [cpr](https://github.com/libcpr/cpr).
 
-### Sponsor
+## Sponsor
 
 [OLREA](https://www.olrea.fr/)
