@@ -66,7 +66,7 @@ The library should implement all requests on [OpenAI references](https://platfor
 The library consists of two files: `include/openaicpp/openai.hpp` and `include/openaicpp/json.hpp`.  
 Just copy the `include/openaicpp` folder in your project and you can `#include "openai.hpp"` to your code. That is all.  
 
-Note: **OpenAI-CPP** uses [Nlohmann Json](https://github.com/nlohmann/json) (v3.11.2) which is available in `include/json.hpp`. Feel free to use your own copy for faster compile time build. 
+> Note: **OpenAI-CPP** uses [Nlohmann Json](https://github.com/nlohmann/json) (v3.11.2) which is available in `include/json.hpp`. Feel free to use your own copy for faster compile time build. 
 
 ## Usage
 
@@ -152,9 +152,10 @@ For conveniency, you can put your api secret key in `build/token.txt`, to make t
 
 #### Note for Windows users
 
-If you are using WSL then you are not concerned by the following. 
 
 You might have difficulties handling libcurl where CMake throws `Could NOT find CURL (missing: CURL_LIBRARY CURL_INCLUDE_DIR)`.
+
+> Note: If you are using [WSL](https://learn.microsoft.com/windows/wsl/) then you are not concerned by the following. 
 
 One way to solve this is to grab the curl version for Windows [here](https://curl.se/windows/), copy the content of `include`
 in appropriate folders available visible in your PATH (e.g. if in your Git installation `[...]/Git/mingw64/include/`).
