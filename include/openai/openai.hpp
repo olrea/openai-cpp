@@ -95,7 +95,7 @@ public:
     }
 
     void setBody(const std::string& data);
-    void setMultiformPart(const std::string& filepath, const std::map<std::string, std::string>& fields);
+    void setMultiformPart(const std::pair<std::string, std::string>& filefield_and_filepath, const std::map<std::string, std::string>& fields);
     
     Response getPrepare();
     Response postPrepare(const std::string& contentType = "");
@@ -129,8 +129,7 @@ inline void Session::setBody(const std::string& data) {
     }
 }
 
-// TODO should be more generic for other multiform part
-inline void Session::setMultiformPart(const std::string& filepath, const std::map<std::string, std::string>& fields) {
+inline void Session::setMultiformPart(const std::pair<std::string, std::string>& fieldfield_and_filepath, const std::map<std::string, std::string>& fields) {
     // https://curl.se/libcurl/c/curl_mime_init.html
     if (curl_) {
         if (mime_form_ != nullptr) {
@@ -142,8 +141,8 @@ inline void Session::setMultiformPart(const std::string& filepath, const std::ma
         mime_form_ = curl_mime_init(curl_);
     
         field = curl_mime_addpart(mime_form_);
-        curl_mime_name(field, "file");
-        curl_mime_filedata(field, filepath.c_str());
+        curl_mime_name(field, fieldfield_and_filepath.first.c_str());
+        curl_mime_filedata(field, fieldfield_and_filepath.second.c_str());
 
         for (const auto &field_pair : fields) {
             field = curl_mime_addpart(mime_form_);
@@ -381,7 +380,7 @@ public:
     // void change_token(const std::string& token) { token_ = token; };
     void setThrowException(bool throw_exception) { throw_exception_ = throw_exception; }
 
-    void setMultiformPart(const std::string& filepath, const std::map<std::string, std::string>& fields) { session_.setMultiformPart(filepath, fields); }
+    void setMultiformPart(const std::pair<std::string, std::string>& filefield_and_filepath, const std::map<std::string, std::string>& fields) { session_.setMultiformPart(filefield_and_filepath, fields); }
 
     Json post(const std::string& suffix, const std::string& data, const std::string& contentType) {
         setParameters(suffix, data, contentType);
@@ -622,7 +621,7 @@ inline Json CategoryChat::create(Json input) {
 // POST https://api.openai.com/v1/audio/transcriptions
 // Transcribes audio into the input language.
 inline Json CategoryAudio::transcribe(Json input) {
-    openai_.setMultiformPart(input["file"].get<std::string>(), 
+    openai_.setMultiformPart({"file", input["file"].get<std::string>()}, 
         std::map<std::string, std::string>{{"model", input["model"].get<std::string>()}}
     );
 
@@ -632,7 +631,7 @@ inline Json CategoryAudio::transcribe(Json input) {
 // POST https://api.openai.com/v1/audio/translations
 // Translates audio into into English..
 inline Json CategoryAudio::translate(Json input) {
-    openai_.setMultiformPart(input["file"].get<std::string>(), 
+    openai_.setMultiformPart({"file", input["file"].get<std::string>()}, 
         std::map<std::string, std::string>{{"model", input["model"].get<std::string>()}}
     );
 
@@ -654,13 +653,74 @@ inline Json CategoryImage::create(Json input) {
 // POST https://api.openai.com/v1/images/edits
 // Creates an edited or extended image given an original image and a prompt.
 inline Json CategoryImage::edit(Json input) {
-    return openai_.post("images/edits", input);
+    std::string prompt = input["prompt"].get<std::string>(); // required
+    // Default values
+    std::string mask = "";
+    int n = 1;
+    std::string size = "1024x1024";
+    std::string response_format = "url";
+    std::string user = "";
+    
+    if (input.contains("mask")) {
+        mask = input["mask"].get<std::string>();
+    }
+    if (input.contains("n")) {
+        n = input["n"].get<int>();
+    }
+    if (input.contains("size")) {
+        size = input["size"].get<std::string>();
+    }
+    if (input.contains("response_format")) {
+        response_format = input["response_format"].get<std::string>();
+    }
+    if (input.contains("user")) {
+        user = input["user"].get<std::string>();
+    }
+    openai_.setMultiformPart({"image",input["image"].get<std::string>()}, 
+        std::map<std::string, std::string>{
+            {"prompt", prompt},
+            {"mask", mask},
+            {"n", std::to_string(n)},
+            {"size", size},
+            {"response_format", response_format},
+            {"user", user}
+        }
+    );
+
+    return openai_.post("images/edits", std::string{""}, "multipart/form-data"); 
 }
 
 // POST https://api.openai.com/v1/images/variations
 // Creates a variation of a given image.
 inline Json CategoryImage::variation(Json input) {
-    return openai_.post("images/variations", input);
+    // Default values
+    int n = 1;
+    std::string size = "1024x1024";
+    std::string response_format = "url";
+    std::string user = "";
+    
+    if (input.contains("n")) {
+        n = input["n"].get<int>();
+    }
+    if (input.contains("size")) {
+        size = input["size"].get<std::string>();
+    }
+    if (input.contains("response_format")) {
+        response_format = input["response_format"].get<std::string>();
+    }
+    if (input.contains("user")) {
+        user = input["user"].get<std::string>();
+    }
+    openai_.setMultiformPart({"image",input["image"].get<std::string>()}, 
+        std::map<std::string, std::string>{
+            {"n", std::to_string(n)},
+            {"size", size},
+            {"response_format", response_format},
+            {"user", user}
+        }
+    );
+
+    return openai_.post("images/variations", std::string{""}, "multipart/form-data"); 
 }
 
 inline Json CategoryEmbedding::create(Json input) { 
@@ -672,7 +732,7 @@ inline Json CategoryFile::list() {
 }
 
 inline Json CategoryFile::upload(Json input) {
-    openai_.setMultiformPart(input["file"].get<std::string>(), 
+    openai_.setMultiformPart({"file", input["file"].get<std::string>()}, 
         std::map<std::string, std::string>{{"purpose", input["purpose"].get<std::string>()}}
     );
 
