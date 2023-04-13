@@ -62,13 +62,13 @@ struct Response {
 class Session {
 public:
     Session(bool throw_exception) : throw_exception_{throw_exception} {
-        curl_global_init(CURL_GLOBAL_ALL);
-        curl_ = curl_easy_init();
+        initCurl();
+        ignoreSSL();
     }
 
     Session(bool throw_exception, std::string proxy_url) : throw_exception_{ throw_exception } {
-        curl_global_init(CURL_GLOBAL_ALL);
-        curl_ = curl_easy_init();
+        initCurl();
+        ignoreSSL();
         setProxyUrl(proxy_url);
     }
 
@@ -80,18 +80,28 @@ public:
         }
     }
 
+    void initCurl() {
+        curl_global_init(CURL_GLOBAL_ALL);
+        curl_ = curl_easy_init();
+        if (curl_ == nullptr) {
+            throw std::runtime_error("curl cannot initialize"); // here we throw it shouldn't happen
+        }
+    }
+
+    void ignoreSSL() {
+        curl_easy_setopt(curl_, CURLOPT_SSL_VERIFYPEER, 0L);
+    }
+ 
     void setUrl(const std::string& url) { url_ = url; }
 
     void setToken(const std::string& token, const std::string& organization) {
         token_ = token;
         organization_ = organization;
     }
- 
     void setProxyUrl(const std::string& url) {
         proxy_url_ = url; 
-        if (nullptr != curl_) {
-            curl_easy_setopt(curl_, CURLOPT_PROXY, proxy_url_.c_str());
-        }
+        curl_easy_setopt(curl_, CURLOPT_PROXY, proxy_url_.c_str());
+        
     }
 
     void setBody(const std::string& data);
