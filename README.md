@@ -15,6 +15,8 @@ No special requirement. You should already have these :
 + C++11/C++14/C++17/C++20 compatible compiler
 + [libcurl](https://curl.se/libcurl/)
 
+Check [Install curl](https://everything.curl.dev/get) to make sure you have installed the development package.
+
 ## OpenAI C++ current implementation
 
 The library should implement all requests on [OpenAI references](https://platform.openai.com/docs/api-reference). If any are missing (due to an update), feel free to open an issue.
@@ -148,31 +150,6 @@ examples/[whatever]
 
 In your project, if you want to get verbose output like when running the examples, you can define `#define OPENAI_VERBOSE_OUTPUT`.
 
-#### Note for Windows users
-
-
-You might have difficulties handling libcurl where CMake throws `Could NOT find CURL (missing: CURL_LIBRARY CURL_INCLUDE_DIR)`.
-
-> Note: If you are using [WSL](https://learn.microsoft.com/windows/wsl/) then you are not concerned by the following. 
-
-One way to solve this is to grab the curl version for Windows [here](https://curl.se/windows/), copy the content of `include`
-in appropriate folders available visible in your PATH (e.g. if in your Git installation `[...]/Git/mingw64/include/`).
-You also need to grab the `curl.lib` and the `libcurl.dll` files from [here](https://dl.dropboxusercontent.com/s/jxwohqax4e2avyt/libcurl-7.48.0-WinSSL-zlib-x86-x64.zip?dl=0) and copy them in appropriate folders (e.g. if in your Git installation `[...]/Git/mingw64/lib/`).
-
-```bash
-mkdir build && cd build
-cmake .. -DCMAKE_GENERATOR_PLATFORM=x64
-cmake --build .
-cmake --build . --target 00-showcase # For a specific target
-```
-
-Or if you prefer using GNU GCC on Windows
-
-```bash
-cmake -G "MSYS Makefiles" -D CMAKE_CXX_COMPILER=g++ ..
-make
-```
-
 ### Advanced usage
 
 #### A word about error handling
@@ -225,6 +202,38 @@ int main() {
 ```
 
 You can use a [std::reference_wrapper](http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper) as shown in [examples/09-instances.cpp](examples/09-instances.cpp). This strategy is useful if you have to manage several OpenAI-CPP instances.
+
+
+## Troubleshooting
+
+### Libcurl with Windows
+
+> Note: If you are using [WSL](https://learn.microsoft.com/windows/wsl/) then you are not concerned by the following. 
+
+According to [Install Curl on Windows](https://everything.curl.dev/get/windows),
+> Windows 10 comes with the curl tool bundled with the operating system since version 1804
+
+However, you still might have difficulties handling libcurl where CMake throws `Could NOT find CURL (missing: CURL_LIBRARY CURL_INCLUDE_DIR)`.  
+You can try to follow one the 2 ways proposed by the the Curl [Install Curl on Windows](https://everything.curl.dev/get/windows).
+
+One another ways to solve this is to grab the curl version for Windows [here](https://curl.se/windows/), copy the content of `include`
+in appropriate folders available visible in your PATH (e.g. if in your Git installation `[...]/Git/mingw64/include/`).
+You also need to grab the `curl.lib` and the `libcurl.dll` files from [here](https://dl.dropboxusercontent.com/s/jxwohqax4e2avyt/libcurl-7.48.0-WinSSL-zlib-x86-x64.zip?dl=0) and copy them in appropriate folders (e.g. if in your Git installation `[...]/Git/mingw64/lib/`).
+
+```bash
+mkdir build && cd build
+cmake .. -DCMAKE_GENERATOR_PLATFORM=x64
+cmake --build .
+cmake --build . --target 00-showcase # For a specific target
+```
+
+Or if you prefer using GNU GCC on Windows
+
+```bash
+cmake -G "MSYS Makefiles" -D CMAKE_CXX_COMPILER=g++ ..
+make
+```
+
 
 ## License
 
