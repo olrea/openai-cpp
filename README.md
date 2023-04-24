@@ -56,17 +56,17 @@ The library should implement all requests on [OpenAI references](https://platfor
 - [Delete fine-tune model](https://platform.openai.com/docs/api-reference/fine-tunes/delete-model) ✅
 
 ### [API Chat](https://platform.openai.com/docs/api-reference/chat) · [10-chat.cpp](examples/10-chat.cpp)
-- [Create chat completion](https://platform.openai.com/docs/api-reference/chat/create) ✅
+- [Create chat completion](https://platform.openai.com/docs/api-reference/chat/create) ✅https://github.com/olrea/openai-cpp/tree/main/include/openai
 
 ### [API Audio](https://platform.openai.com/docs/api-reference/audio) · [11-audio.cpp](examples/11-audio.cpp)
-- [Create transcription](https://platform.openai.com/docs/api-reference/audio/create) ✅
+- [Create transcription](https://platform.openai.com/docs/api-reference/audio/create) ✅****
 - [Create translation](https://platform.openai.com/docs/api-reference/audio/create) ✅
 
 
 ## Installation
 
-The library consists of two files: `include/openaicpp/openai.hpp` and `include/openaicpp/json.hpp`.  
-Just copy the `include/openaicpp` folder in your project and you can `#include "openai.hpp"` to your code. That is all.  
+The library consists of two files: [include/openai/openai.hpp](https://github.com/olrea/openai-cpp/blob/main/include/openai/openai.hpp) and [include/openai/nlohmann/json.hpp](https://github.com/olrea/openai-cpp/blob/main/include/openai/nlohmann/json.hpp).  
+Just copy the [include/openaicpp](https://github.com/olrea/openai-cpp/tree/main/include/openai) folder in your project and you can use `#include "openai.hpp"` to your code. That is all.  
 
 > Note: **OpenAI-CPP** uses [Nlohmann Json](https://github.com/nlohmann/json) (v3.11.2) which is available in `include/json.hpp`. Feel free to use your own copy for faster compile time build. 
 
