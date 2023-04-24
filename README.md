@@ -22,32 +22,32 @@ Check [Install curl](https://everything.curl.dev/get) to make sure you have inst
 The library should implement all requests on [OpenAI references](https://platform.openai.com/docs/api-reference). If any are missing (due to an update), feel free to open an issue.
 
 
-### [API models](https://platform.openai.com/docs/api-reference/models) · [1-model.cpp](examples/01-model.cpp)
+### API models · [1-model.cpp](examples/01-model.cpp)
 - [List models](https://platform.openai.com/docs/api-reference/models/list) ✅
 - [Retrieve model](https://platform.openai.com/docs/api-reference/models/retrieve) ✅
 
-### [API completions](https://platform.openai.com/docs/api-reference/completions) · [2-completion.cpp](examples/02-completion.cpp)
+### API completions · [2-completion.cpp](examples/02-completion.cpp)
 - [Create completion](https://platform.openai.com/docs/api-reference/completions/create) ✅
   
-### [API edits](https://platform.openai.com/docs/api-reference/edits) · [3-edit.cpp](examples/03-edit.cpp)
+### API edits · [3-edit.cpp](examples/03-edit.cpp)
 - [Create edit](https://platform.openai.com/docs/api-reference/edits/create) ✅
 
-### [API images](https://platform.openai.com/docs/api-reference/images) · [4-image.cpp](examples/04-image.cpp)
+### API images · [4-image.cpp](examples/04-image.cpp)
 - [Create image](https://platform.openai.com/docs/api-reference/images) ✅
 - [Create image edit](https://platform.openai.com/docs/api-reference/images/create-edit) ✅
 - [Create image variation](https://platform.openai.com/docs/api-reference/images/create-variation) ✅
 
-### [API embeddings](https://platform.openai.com/docs/api-reference/embeddings) · [5-embedding.cpp](examples/05-embedding.cpp)
+### API embeddings · [5-embedding.cpp](examples/05-embedding.cpp)
 - [Create embeddings](https://platform.openai.com/docs/api-reference/embeddings/create) ✅
 
-### [API files](https://platform.openai.com/docs/api-reference/files) · [6-file.cpp](examples/06-file.cpp)
+### API files · [6-file.cpp](examples/06-file.cpp)
 - [List file](https://platform.openai.com/docs/api-reference/files/list) ✅
 - [Upload file](https://platform.openai.com/docs/api-reference/files/upload) ✅
 - [Delete file](https://platform.openai.com/docs/api-reference/files/delete) ✅
 - [Retrieve file](https://platform.openai.com/docs/api-reference/files/retrieve) ✅
 - [Retrieve file content](https://platform.openai.com/docs/api-reference/files/retrieve-content) ✅
 
-### [API fine-tunes](https://platform.openai.com/docs/api-reference/fine-tunes) · [7-fine-tune.cpp](examples/07-fine-tune.cpp)
+### API fine-tunes· [7-fine-tune.cpp](examples/07-fine-tune.cpp)
 - [Create fine-tune](https://platform.openai.com/docs/api-reference/fine-tunes/create) ✅
 - [List fine-tune](https://platform.openai.com/docs/api-reference/fine-tunes/list) ✅
 - [Retrieve fine-tune](https://platform.openai.com/docs/api-reference/fine-tunes/retrieve) ✅
@@ -55,11 +55,11 @@ The library should implement all requests on [OpenAI references](https://platfor
 - [List fine-tune events](https://platform.openai.com/docs/api-reference/fine-tunes/events) ✅
 - [Delete fine-tune model](https://platform.openai.com/docs/api-reference/fine-tunes/delete-model) ✅
 
-### [API Chat](https://platform.openai.com/docs/api-reference/chat) · [10-chat.cpp](examples/10-chat.cpp)
+### API Chat · [10-chat.cpp](examples/10-chat.cpp)
 - [Create chat completion](https://platform.openai.com/docs/api-reference/chat/create) ✅https://github.com/olrea/openai-cpp/tree/main/include/openai
 
-### [API Audio](https://platform.openai.com/docs/api-reference/audio) · [11-audio.cpp](examples/11-audio.cpp)
-- [Create transcription](https://platform.openai.com/docs/api-reference/audio/create) ✅****
+### API Audio · [11-audio.cpp](examples/11-audio.cpp)
+- [Create transcription](https://platform.openai.com/docs/api-reference/audio/create) ✅
 - [Create translation](https://platform.openai.com/docs/api-reference/audio/create) ✅
 
 
