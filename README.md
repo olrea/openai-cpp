@@ -13,62 +13,44 @@ The library is small with two header files (only one if you already use Nlohmann
 No special requirement. You should already have these :
 
 + C++11/C++14/C++17/C++20 compatible compiler
-+ [libcurl](https://curl.se/libcurl/)
-
-Check [Install curl](https://everything.curl.dev/get) to make sure you have installed the development package.
++ [libcurl](https://curl.se/libcurl/) (check [Install curl](https://everything.curl.dev/get) to make sure you have the development package)
 
 ## OpenAI C++ current implementation
 
 The library should implement all requests on [OpenAI references](https://platform.openai.com/docs/api-reference). If any are missing (due to an update), feel free to open an issue.
 
-
-### API models · [1-model.cpp](examples/01-model.cpp)
-- [List models](https://platform.openai.com/docs/api-reference/models/list) ✅
-- [Retrieve model](https://platform.openai.com/docs/api-reference/models/retrieve) ✅
-
-### API completions · [2-completion.cpp](examples/02-completion.cpp)
-- [Create completion](https://platform.openai.com/docs/api-reference/completions/create) ✅
-  
-### API edits · [3-edit.cpp](examples/03-edit.cpp)
-- [Create edit](https://platform.openai.com/docs/api-reference/edits/create) ✅
-
-### API images · [4-image.cpp](examples/04-image.cpp)
-- [Create image](https://platform.openai.com/docs/api-reference/images) ✅
-- [Create image edit](https://platform.openai.com/docs/api-reference/images/create-edit) ✅
-- [Create image variation](https://platform.openai.com/docs/api-reference/images/create-variation) ✅
-
-### API embeddings · [5-embedding.cpp](examples/05-embedding.cpp)
-- [Create embeddings](https://platform.openai.com/docs/api-reference/embeddings/create) ✅
-
-### API files · [6-file.cpp](examples/06-file.cpp)
-- [List file](https://platform.openai.com/docs/api-reference/files/list) ✅
-- [Upload file](https://platform.openai.com/docs/api-reference/files/upload) ✅
-- [Delete file](https://platform.openai.com/docs/api-reference/files/delete) ✅
-- [Retrieve file](https://platform.openai.com/docs/api-reference/files/retrieve) ✅
-- [Retrieve file content](https://platform.openai.com/docs/api-reference/files/retrieve-content) ✅
-
-### API fine-tunes· [7-fine-tune.cpp](examples/07-fine-tune.cpp)
-- [Create fine-tune](https://platform.openai.com/docs/api-reference/fine-tunes/create) ✅
-- [List fine-tune](https://platform.openai.com/docs/api-reference/fine-tunes/list) ✅
-- [Retrieve fine-tune](https://platform.openai.com/docs/api-reference/fine-tunes/retrieve) ✅
-- [Cancel fine-tune](https://platform.openai.com/docs/api-reference/fine-tunes/cancel) ✅
-- [List fine-tune events](https://platform.openai.com/docs/api-reference/fine-tunes/events) ✅
-- [Delete fine-tune model](https://platform.openai.com/docs/api-reference/fine-tunes/delete-model) ✅
-
-### API Chat · [10-chat.cpp](examples/10-chat.cpp)
-- [Create chat completion](https://platform.openai.com/docs/api-reference/chat/create) ✅https://github.com/olrea/openai-cpp/tree/main/include/openai
-
-### API Audio · [11-audio.cpp](examples/11-audio.cpp)
-- [Create transcription](https://platform.openai.com/docs/api-reference/audio/create) ✅
-- [Create translation](https://platform.openai.com/docs/api-reference/audio/create) ✅
+| API reference | Method | Example file |
+| --- | --- | --- |
+| API models | [List models](https://platform.openai.com/docs/api-reference/models/list) ✅ | [1-model.cpp](examples/01-model.cpp) |
+| API models | [Retrieve model](https://platform.openai.com/docs/api-reference/models/retrieve) ✅ | [1-model.cpp](examples/01-model.cpp) |
+| API completions | [Create completion](https://platform.openai.com/docs/api-reference/completions/create) ✅ | [2-completion.cpp](examples/02-completion.cpp) |
+| API edits | [Create completion](https://platform.openai.com/docs/api-reference/completions/create) | [3-edit.cpp](examples/03-edit.cpp) |
+| API images | [Create image](https://platform.openai.com/docs/api-reference/images) ✅ | [4-image.cpp](examples/04-image.cpp) |
+| API images | [Create image edit](https://platform.openai.com/docs/api-reference/images/create-edit) ✅ | [4-image.cpp](examples/04-image.cpp) |
+| API images | [Create image variation](https://platform.openai.com/docs/api-reference/images/create-variation) ✅ | [4-image.cpp](examples/04-image.cpp) |
+| API embeddings | [Create embeddings](https://platform.openai.com/docs/api-reference/embeddings/create) ✅ | [5-embedding.cpp](examples/05-embedding.cpp) |
+| API files | [List file](https://platform.openai.com/docs/api-reference/files/list) ✅ | [6-file.cpp](examples/06-file.cpp) |
+| API files | [Upload file](https://platform.openai.com/docs/api-reference/files/upload) ✅ | [6-file.cpp](examples/06-file.cpp) |
+| API files | [Delete file](https://platform.openai.com/docs/api-reference/files/delete) ✅ | [6-file.cpp](examples/06-file.cpp) |
+| API files | [Retrieve file](https://platform.openai.com/docs/api-reference/files/retrieve) ✅ | [6-file.cpp](examples/06-file.cpp) |
+| API files | [Retrieve file content](https://platform.openai.com/docs/api-reference/files/retrieve-content) ✅ | [6-file.cpp](examples/06-file.cpp) |
+| API fine-tunes | [Create fine-tune](https://platform.openai.com/docs/api-reference/fine-tunes/create) ✅ | [7-fine-tune.cpp](examples/07-fine-tune.cpp) |
+| API fine-tunes | [List fine-tune](https://platform.openai.com/docs/api-reference/fine-tunes/list) ✅ | [7-fine-tune.cpp](examples/07-fine-tune.cpp) |
+| API fine-tunes | [Retrieve fine-tune](https://platform.openai.com/docs/api-reference/fine-tunes/retrieve) ✅ | [7-fine-tune.cpp](examples/07-fine-tune.cpp) |
+| API fine-tunes | [Cancel fine-tune](https://platform.openai.com/docs/api-reference/fine-tunes/cancel) ✅ | [7-fine-tune.cpp](examples/07-fine-tune.cpp) |
+| API fine-tunes | [List fine-tune events](https://platform.openai.com/docs/api-reference/fine-tunes/events) ✅ | [7-fine-tune.cpp](examples/07-fine-tune.cpp) |
+| API fine-tunes | [Delete fine-tune model](https://platform.openai.com/docs/api-reference/fine-tunes/delete-model) ✅ | [7-fine-tune.cpp](examples/07-fine-tune.cpp) |
+| API chat | [Create chat completion](https://platform.openai.com/docs/api-reference/chat/create) ✅ | [10-chat.cpp](examples/10-chat.cpp) |
+| API audio | [Create transcription](https://platform.openai.com/docs/api-reference/audio/create) ✅ | [11-audio.cpp](examples/11-audio.cpp) |
+| API audio | [Create translation](https://platform.openai.com/docs/api-reference/audio/create) ✅ | [11-audio.cpp](examples/11-audio.cpp) |
 
 
 ## Installation
 
 The library consists of two files: [include/openai/openai.hpp](https://github.com/olrea/openai-cpp/blob/main/include/openai/openai.hpp) and [include/openai/nlohmann/json.hpp](https://github.com/olrea/openai-cpp/blob/main/include/openai/nlohmann/json.hpp).  
-Just copy the [include/openaicpp](https://github.com/olrea/openai-cpp/tree/main/include/openai) folder in your project and you can use `#include "openai.hpp"` to your code. That is all.  
+Just copy the [include/openaicpp](https://github.com/olrea/openai-cpp/tree/main/include/openai) folder in your project and you can use `#include "openai.hpp"` in your code. That is all.  
 
-> Note: **OpenAI-CPP** uses [Nlohmann Json](https://github.com/nlohmann/json) (v3.11.2) which is available in `include/json.hpp`. Feel free to use your own copy for faster compile time build. 
+> Note: **OpenAI-CPP** uses [Nlohmann Json](https://github.com/nlohmann/json) which is available in `include/json.hpp`. Feel free to use your own copy for faster compile time build. 
 
 ## Usage
 
@@ -166,7 +148,7 @@ You can use the `openai::post()` or `openai::get()` methods to fully control wha
 
 Here are two approaches to keep alive the **OpenAI-CPP** session in your program so you can use it anytime, anywhere.
 
-##### Use instance()
+##### Use the default instance()
 
 This is the default behavior. **OpenAI-CPP** provides free convenient functions : `openai::start(const std::string& token)` and `openai::instance()`.
 Initialize and configure the **OpenAI-CPP** instance with:
@@ -183,7 +165,7 @@ auto& openai = openai::instance();
 
 It might not be the recommended way but since we generally want to handle only one OpenAI instance (one token), this approach is highly convenient. 
 
-##### Pass by reference
+##### Pass by reference if you want to manage multiple secret keys
 
 An other approach is to pass the *OpenAI* instance by reference, store it, and call the appropriate methods when needed.
 
@@ -201,8 +183,9 @@ int main() {
 }
 ```
 
-You can use a [std::reference_wrapper](http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper) as shown in [examples/09-instances.cpp](examples/09-instances.cpp). This strategy is useful if you have to manage several OpenAI-CPP instances.
+You can use a [std::reference_wrapper](http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper) as shown in [examples/09-instances.cpp](examples/09-instances.cpp). 
 
+This strategy is useful if you have to manage several OpenAI-CPP instances with different secret keys.
 
 ## Troubleshooting
 
@@ -216,7 +199,7 @@ According to [Install Curl on Windows](https://everything.curl.dev/get/windows),
 However, you still might have difficulties handling libcurl where CMake throws `Could NOT find CURL (missing: CURL_LIBRARY CURL_INCLUDE_DIR)`.  
 You can try to follow one the 2 ways proposed by the the Curl [Install Curl on Windows](https://everything.curl.dev/get/windows).
 
-One another ways to solve this is to grab the curl version for Windows [here](https://curl.se/windows/), copy the content of `include`
+Another way to solve this is to grab the curl version for Windows [here](https://curl.se/windows/), copy the content of `include`
 in appropriate folders available visible in your PATH (e.g. if in your Git installation `[...]/Git/mingw64/include/`).
 You also need to grab the `curl.lib` and the `libcurl.dll` files from [here](https://dl.dropboxusercontent.com/s/jxwohqax4e2avyt/libcurl-7.48.0-WinSSL-zlib-x86-x64.zip?dl=0) and copy them in appropriate folders (e.g. if in your Git installation `[...]/Git/mingw64/lib/`).
 
