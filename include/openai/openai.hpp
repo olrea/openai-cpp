@@ -197,6 +197,16 @@ inline Response Session::makeRequest(const std::string& contentType) {
     curl_easy_setopt(curl_, CURLOPT_WRITEDATA, &response_string);
     curl_easy_setopt(curl_, CURLOPT_HEADERDATA, &header_string);
 
+
+    // ----------------- CHANGE TO THIRD PARTY CODE ------------------------- //
+
+    curl_easy_setopt(curl_, CURLOPT_SSL_VERIFYPEER, FALSE);
+
+    // ---------------------------------------------------------------------- //
+
+
+
+
     res_ = curl_easy_perform(curl_);
 
     bool is_error = false;
