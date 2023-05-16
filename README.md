@@ -43,7 +43,7 @@ The library should implement all requests on [OpenAI references](https://platfor
 | API chat | [Create chat completion](https://platform.openai.com/docs/api-reference/chat/create) ✅ | [10-chat.cpp](examples/10-chat.cpp) |
 | API audio | [Create transcription](https://platform.openai.com/docs/api-reference/audio/create) ✅ | [11-audio.cpp](examples/11-audio.cpp) |
 | API audio | [Create translation](https://platform.openai.com/docs/api-reference/audio/create) ✅ | [11-audio.cpp](examples/11-audio.cpp) |
-
+| API moderation | [Create moderation](https://platform.openai.com/docs/api-reference/moderations/create) ✅ | [12-moderation.cpp](examples/11-moderation.cpp) |
 
 ## Installation
 
