@@ -369,14 +369,25 @@ private:
 // OpenAI
 class OpenAI {
 public:
-    OpenAI(const std::string& token = "", const std::string& organization = "", bool throw_exception = true) 
+    OpenAI(const std::string& token = "", const std::string& organization = "", bool throw_exception = true, const std::string& api_base_url = "") 
         : session_{throw_exception}, token_{token}, organization_{organization}, throw_exception_{throw_exception} {
             if (token.empty()) {
                 if(const char* env_p = std::getenv("OPENAI_API_KEY")) {
                     token_ = std::string{env_p};
                 }
             }
-            session_.setUrl("https://api.openai.com/v1/");
+            if (api_base_url.empty()) {
+                if(const char* env_p = std::getenv("OPENAI_API_BASE")) {
+                    base_url = std::string{env_p} + "/";
+                }
+                else {
+                    base_url = "https://api.openai.com/v1/";
+                }
+            }
+            else {
+                base_url = api_base_url;
+            }
+            session_.setUrl(base_url);
             session_.setToken(token_, organization_);
         }
     
@@ -470,7 +481,7 @@ public:
     }
 
 private:
-    std::string base_url{ "https://api.openai.com/v1/" };
+    std::string base_url;
 
     void setParameters(const std::string& suffix, const std::string& data, const std::string& contentType = "") {
         auto complete_url =  base_url+ suffix;
