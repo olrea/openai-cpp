@@ -376,6 +376,7 @@ public:
                 if(_dupenv_s(&env_p, NULL, "OPENAI_API_KEY") == 0 && env_p != NULL) {
                     token_ = std::string{env_p};
                 }
+                free(env_p);
             }
             if (api_base_url.empty()) {
                 char* env_p;
@@ -385,6 +386,7 @@ public:
                 else {
                     base_url = "https://api.openai.com/v1/";
                 }
+                free(env_p);
             }
             else {
                 base_url = api_base_url;
