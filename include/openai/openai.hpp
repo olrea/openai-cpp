@@ -374,14 +374,14 @@ public:
             if (token.empty()) {
                 char* env_p;
                 size_t len;
-                if(_dupenv_s(&env_p, &len, "OPENAI_API_KEY") == 0) {
+                if(_dupenv_s(&env_p, &len, "OPENAI_API_KEY") == 0 && env_p != NULL) {
                     token_ = std::string{env_p};
                 }
             }
             if (api_base_url.empty()) {
                 char* env_p;
                 size_t len;
-                if(_dupenv_s(&env_p, &len, "OPENAI_API_BASE") == 0) {
+                if(_dupenv_s(&env_p, &len, "OPENAI_API_BASE") == 0 && env_p != NULL) {
                     base_url = std::string{env_p} + "/";
                 }
                 else {
