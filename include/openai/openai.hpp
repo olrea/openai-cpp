@@ -372,12 +372,16 @@ public:
     OpenAI(const std::string& token = "", const std::string& organization = "", bool throw_exception = true, const std::string& api_base_url = "") 
         : session_{throw_exception}, token_{token}, organization_{organization}, throw_exception_{throw_exception} {
             if (token.empty()) {
-                if(const char* env_p = std::getenv("OPENAI_API_KEY")) {
+                char* env_p;
+                size_t len;
+                if(_dupenv_s(&env_p, &len, "OPENAI_API_KEY") == 0) {
                     token_ = std::string{env_p};
                 }
             }
             if (api_base_url.empty()) {
-                if(const char* env_p = std::getenv("OPENAI_API_BASE")) {
+                char* env_p;
+                size_t len;
+                if(_dupenv_s(&env_p, &len, "OPENAI_API_BASE") == 0) {
                     base_url = std::string{env_p} + "/";
                 }
                 else {
