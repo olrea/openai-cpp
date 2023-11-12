@@ -74,18 +74,20 @@ public:
 
     ~Session() { 
         curl_easy_cleanup(curl_); 
-        curl_global_cleanup();
+        // curl_global_cleanup();
         if (mime_form_ != nullptr) {
             curl_mime_free(mime_form_);
         }
     }
 
     void initCurl() {
-        curl_global_init(CURL_GLOBAL_ALL);
+        // curl_global_init(CURL_GLOBAL_ALL);
         curl_ = curl_easy_init();
         if (curl_ == nullptr) {
             throw std::runtime_error("curl cannot initialize"); // here we throw it shouldn't happen
         }
+        // 设置这个防止多线程调用崩溃
+        curl_easy_setopt(curl_, CURLOPT_NOSIGNAL, 1);
     }
 
     void ignoreSSL() {
@@ -103,6 +105,8 @@ public:
         curl_easy_setopt(curl_, CURLOPT_PROXY, proxy_url_.c_str());
         
     }
+
+    void setBeta(const std::string& beta) { beta_ = beta; }
 
     void setBody(const std::string& data);
     void setMultiformPart(const std::pair<std::string, std::string>& filefield_and_filepath, const std::map<std::string, std::string>& fields);
@@ -127,6 +131,7 @@ private:
     std::string proxy_url_;
     std::string token_;
     std::string organization_;
+    std::string beta_;
 
     bool        throw_exception_;
     std::mutex  mutex_request_;
@@ -200,6 +205,9 @@ inline Response Session::makeRequest(const std::string& contentType) {
     if (!organization_.empty()) {
         headers = curl_slist_append(headers, std::string{"OpenAI-Organization: " + organization_}.c_str());
     }
+    if (!beta_.empty()) {
+        headers = curl_slist_append(headers, std::string{"OpenAI-Beta: " + beta_}.c_str());
+    }
     curl_easy_setopt(curl_, CURLOPT_HTTPHEADER, headers);
     curl_easy_setopt(curl_, CURLOPT_URL, url_.c_str());
     
@@ -244,6 +252,59 @@ struct CategoryModel {
     Json retrieve(const std::string& model);
 
     CategoryModel(OpenAI& openai) : openai_{openai} {}
+private:
+    OpenAI& openai_;
+};
+
+// https://platform.openai.com/docs/api-reference/assistants
+// Build assistants that can call models and use tools to perform tasks.
+struct CategoryAssistants {
+    Json create(Json input);
+    Json retrieve(const std::string& assistants);
+    Json modify(const std::string& assistants, Json input);
+    Json del(const std::string& assistants);
+    Json list();
+    Json createFile(const std::string& assistants, Json input);
+    Json retrieveFile(const std::string& assistants, const std::string& files);
+    Json delFile(const std::string& assistants, const std::string& files);
+    Json listFile(const std::string& assistants);
+
+    CategoryAssistants(OpenAI& openai) : openai_{openai} {}
+private:
+    OpenAI& openai_;
+};
+
+// https://platform.openai.com/docs/api-reference/threads
+// Create threads that assistants can interact with.
+struct CategoryThreads {
+    Json create();
+    Json retrieve(const std::string& threads);
+    Json modify(const std::string& threads, Json input);
+    Json del(const std::string& threads);
+    Json list();
+
+    // https://platform.openai.com/docs/api-reference/messages
+    // Create messages within threads
+    Json createMessage(const std::string& threads, Json input);
+    Json retrieveMessage(const std::string& threads, const std::string& messages);
+    Json modifyMessage(const std::string& threads, const std::string& messages, Json input);
+    Json listMessage(const std::string& threads);
+    Json retrieveMessageFile(const std::string& threads, const std::string& messages, const std::string& files);
+    Json listMessageFile(const std::string& threads, const std::string& messages);
+
+    // https://platform.openai.com/docs/api-reference/runs
+    // Represents an execution run on a thread.
+    Json createRun(const std::string& threads, Json input);
+    Json retrieveRun(const std::string& threads, const std::string& runs);
+    Json modifyRun(const std::string& threads, const std::string& runs, Json input);
+    Json listRun(const std::string& threads);
+    Json submitToolOutputsToRun(const std::string& threads, const std::string& runs, Json input);
+    Json cancelRun(const std::string& threads, const std::string& runs);
+    Json createThreadAndRun(Json input);
+    Json retrieveRunStep(const std::string& threads, const std::string& runs, const std::string& steps);
+    Json listRunStep(const std::string& threads, const std::string& runs);
+
+    CategoryThreads(OpenAI& openai) : openai_{openai} {}
 private:
     OpenAI& openai_;
 };
@@ -369,7 +430,7 @@ private:
 // OpenAI
 class OpenAI {
 public:
-    OpenAI(const std::string& token = "", const std::string& organization = "", bool throw_exception = true, const std::string& api_base_url = "") 
+    OpenAI(const std::string& token = "", const std::string& organization = "", bool throw_exception = true, const std::string& api_base_url = "", const std::string& beta = "") 
         : session_{throw_exception}, token_{token}, organization_{organization}, throw_exception_{throw_exception} {
             if (token.empty()) {
                 if(const char* env_p = std::getenv("OPENAI_API_KEY")) {
@@ -389,6 +450,7 @@ public:
             }
             session_.setUrl(base_url);
             session_.setToken(token_, organization_);
+            session_.setBeta(beta);
         }
     
     OpenAI(const OpenAI&)               = delete;
@@ -396,7 +458,11 @@ public:
     OpenAI(OpenAI&&)                    = delete;
     OpenAI& operator=(OpenAI&&)         = delete;
 
+    void setToken(const std::string& token = "", const std::string& organization = "") { session_.setToken(token, organization); }
+
     void setProxy(const std::string& url) { session_.setProxyUrl(url); }
+
+    void setBeta(const std::string& beta) { session_.setBeta(beta); }
 
     // void change_token(const std::string& token) { token_ = token; };
     void setThrowException(bool throw_exception) { throw_exception_ = throw_exception; }
@@ -530,6 +596,8 @@ private:
 
 public:
     CategoryModel           model     {*this};
+    CategoryAssistants      assistant {*this};
+    CategoryThreads         thread    {*this};
     CategoryCompletion      completion{*this};
     CategoryEdit            edit      {*this};
     CategoryImage           image     {*this};
@@ -554,8 +622,8 @@ inline std::string bool_to_string(const bool b) {
     return ss.str();
 }
 
-inline OpenAI& start(const std::string& token = "", const std::string& organization = "", bool throw_exception = true)  {
-    static OpenAI instance{token, organization, throw_exception};
+inline OpenAI& start(const std::string& token = "", const std::string& organization = "", bool throw_exception = true, const std::string& api_base_url = "")  {
+    static OpenAI instance{token, organization, throw_exception, api_base_url};
     return instance;
 }
 
@@ -575,6 +643,14 @@ inline Json get(const std::string& suffix/*, const Json& json*/) {
 
 inline CategoryModel& model() {
     return instance().model;
+}
+
+inline CategoryAssistants& assistant() {
+    return instance().assistant;
+}
+
+inline CategoryThreads& thread() {
+    return instance().thread;
 }
 
 inline CategoryCompletion& completion() {
@@ -625,6 +701,176 @@ inline Json CategoryModel::list() {
 // Retrieves a model instance, providing basic information about the model such as the owner and permissioning.
 inline Json CategoryModel::retrieve(const std::string& model) {
     return openai_.get("models/" + model);
+}
+
+// POST https://api.openai.com/v1/assistants 
+// Create an assistant with a model and instructions.
+inline Json CategoryAssistants::create(Json input) {
+    return openai_.post("assistants", input);
+}
+
+// GET https://api.openai.com/v1/assistants/{assistant_id}
+// Retrieves an assistant.
+inline Json CategoryAssistants::retrieve(const std::string& assistants) {
+    return openai_.get("assistants/" + assistants);
+}
+
+// POST https://api.openai.com/v1/assistants/{assistant_id}
+// Modifies an assistant.
+inline Json CategoryAssistants::modify(const std::string& assistants, Json input) {
+    return openai_.post("assistants/" + assistants, input);
+}
+
+// DELETE https://api.openai.com/v1/assistants/{assistant_id}
+// Delete an assistant.
+inline Json CategoryAssistants::del(const std::string& assistants) {
+    return openai_.del("assistants/" + assistants);
+}
+
+// GET https://api.openai.com/v1/assistants
+// Returns a list of assistants.
+inline Json CategoryAssistants::list() {
+    return openai_.get("assistants");
+}
+
+// POST https://api.openai.com/v1/assistants/{assistant_id}/files
+// Create an assistant file by attaching a File to an assistant.
+inline Json CategoryAssistants::createFile(const std::string& assistants, Json input) {
+    return openai_.post("assistants/" + assistants + "/files", input);
+}
+
+// GET https://api.openai.com/v1/assistants/{assistant_id}/files/{file_id}
+// Retrieves an AssistantFile.
+inline Json CategoryAssistants::retrieveFile(const std::string& assistants, const std::string& files) {
+    return openai_.get("assistants/" + assistants + "/files/" + files);
+}
+
+// DELETE https://api.openai.com/v1/assistants/{assistant_id}/files/{file_id}
+// Delete an assistant file.
+inline Json CategoryAssistants::delFile(const std::string& assistants, const std::string& files) {
+    return openai_.del("assistants/" + assistants + "/files/" + files);
+}
+
+// GET https://api.openai.com/v1/assistants/{assistant_id}/files
+// Returns a list of assistant files.
+inline Json CategoryAssistants::listFile(const std::string& assistants) {
+    return openai_.get("assistants/" + assistants + "/files");
+}
+
+// POST https://api.openai.com/v1/threads
+// Create a thread.
+inline Json CategoryThreads::create() {
+    Json input;
+    return openai_.post("threads", input);
+}
+
+// GET https://api.openai.com/v1/threads/{thread_id}
+// Retrieves a thread.
+inline Json CategoryThreads::retrieve(const std::string& threads) {
+    return openai_.get("threads/" + threads);
+}
+
+// POST https://api.openai.com/v1/threads/{thread_id}
+// Modifies a thread.
+inline Json CategoryThreads::modify(const std::string& threads, Json input) {
+    return openai_.post("threads/" + threads, input);
+}
+
+// DELETE https://api.openai.com/v1/threads/{thread_id}
+// Delete a thread.
+inline Json CategoryThreads::del(const std::string& threads) {
+    return openai_.del("threads/" + threads);
+}
+
+// POST https://api.openai.com/v1/threads/{thread_id}/messages
+// Create a message.
+inline Json CategoryThreads::createMessage(const std::string& threads, Json input) {
+    return openai_.post("threads/" + threads + "/messages", input);
+}
+
+// GET https://api.openai.com/v1/threads/{thread_id}/messages/{message_id}
+// Retrieve a message.
+inline Json CategoryThreads::retrieveMessage(const std::string& threads, const std::string& messages) {
+    return openai_.get("threads/" + threads + "/messages/" + messages);
+}
+
+// POST https://api.openai.com/v1/threads/{thread_id}/messages/{message_id}
+// Modifies a message.
+inline Json CategoryThreads::modifyMessage(const std::string& threads, const std::string& messages, Json input) {
+    return openai_.post("threads/" + threads + "/messages/" + messages, input);
+}
+
+// GET https://api.openai.com/v1/threads/{thread_id}/messages
+// Returns a list of messages for a given thread.
+inline Json CategoryThreads::listMessage(const std::string& threads) {
+    return openai_.get("threads/" + threads + "/messages");
+}
+
+// GET https://api.openai.com/v1/threads/{thread_id}/messages/{message_id}/files/{file_id}
+// Retrieves a message file.
+inline Json CategoryThreads::retrieveMessageFile(const std::string& threads, const std::string& messages, const std::string& files) {
+    return openai_.get("threads/" + threads + "/messages/" + messages + "/files/" + files);
+}
+
+// GET https://api.openai.com/v1/threads/{thread_id}/messages/{message_id}/files
+// Returns a list of message files.
+inline Json CategoryThreads::listMessageFile(const std::string& threads, const std::string& messages) {
+    return openai_.get("threads/" + threads + "/messages/" + messages + "/files");
+}
+
+// POST https://api.openai.com/v1/threads/{thread_id}/runs
+// Create a run.
+inline Json CategoryThreads::createRun(const std::string& threads, Json input) {
+    return openai_.post("threads/" + threads + "/runs", input);
+}
+
+// GET https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}
+// Retrieves a run.
+inline Json CategoryThreads::retrieveRun(const std::string& threads, const std::string& runs) {
+    return openai_.get("threads/" + threads + "/runs/" + runs);
+}
+
+// POST https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}
+// Modifies a run.
+inline Json CategoryThreads::modifyRun(const std::string& threads, const std::string& runs, Json input) {
+    return openai_.post("threads/" + threads + "/runs/" + runs, input);
+}
+
+// GET https://api.openai.com/v1/threads/{thread_id}/runs
+// Returns a list of runs belonging to a thread.
+inline Json CategoryThreads::listRun(const std::string& threads) {
+    return openai_.get("threads/" + threads + "/runs");
+}
+
+// POST https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs
+// When a run has the status: "requires_action" and required_action.type is submit_tool_outputs, this endpoint can be used to submit the outputs from the tool calls once they're all completed. All outputs must be submitted in a single request.
+inline Json CategoryThreads::submitToolOutputsToRun(const std::string& threads, const std::string& runs, Json input) {
+    return openai_.post("threads/" + threads + "/runs/" + runs + "submit_tool_outputs", input);
+}
+
+// POST https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}/cancel
+// Cancels a run that is in_progress.
+inline Json CategoryThreads::cancelRun(const std::string& threads, const std::string& runs) {
+    Json input;
+    return openai_.post("threads/" + threads + "/runs/" + runs + "/cancel", input);
+}
+
+// POST https://api.openai.com/v1/threads/runs
+// Create a thread and run it in one request.
+inline Json CategoryThreads::createThreadAndRun(Json input) {
+    return openai_.post("threads/runs", input);
+}
+
+// GET https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}/steps/{step_id}
+// Retrieves a run step.
+inline Json CategoryThreads::retrieveRunStep(const std::string& threads, const std::string& runs, const std::string& steps) {
+    return openai_.get("threads/" + threads + "/runs/" + runs + "/steps/" + steps);
+}
+
+// GET https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}/steps
+// Returns a list of run steps belonging to a run.
+inline Json CategoryThreads::listRunStep(const std::string& threads, const std::string& runs) {
+    return openai_.get("threads/" + threads + "/runs/" + runs + "/steps");
 }
 
 // POST https://api.openai.com/v1/completions
@@ -820,6 +1066,8 @@ using _detail::get;
 
 // Helper categories access
 using _detail::model;
+using _detail::assistant;
+using _detail::thread;
 using _detail::completion;
 using _detail::edit;
 using _detail::image;
