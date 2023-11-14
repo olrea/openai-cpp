@@ -507,6 +507,7 @@ public:
             std::cerr << "Response is not a valid JSON\n";
             std::cout << "<< " << response.text<< "\n";
           #endif
+            json = Json{{"Result", response.text}};
         }
         return json;
     }
@@ -888,8 +889,25 @@ inline Json CategoryChat::create(Json input) {
 // POST https://api.openai.com/v1/audio/transcriptions
 // Transcribes audio into the input language.
 inline Json CategoryAudio::transcribe(Json input) {
+    auto lambda = [input]() -> std::map<std::string, std::string> {
+        std::map<std::string, std::string> temp;
+        temp.insert({"model", input["model"].get<std::string>()});
+        if (input.contains("language")) {
+            temp.insert({"language", input["language"].get<std::string>()});
+        }
+        if (input.contains("prompt")) {
+            temp.insert({"prompt", input["prompt"].get<std::string>()});
+        }
+        if (input.contains("response_format")) {
+            temp.insert({"response_format", input["response_format"].get<std::string>()});
+        }
+        if (input.contains("temperature")) {
+            temp.insert({"temperature", std::to_string(input["temperature"].get<float>())});
+        }
+        return temp;
+    };
     openai_.setMultiformPart({"file", input["file"].get<std::string>()}, 
-        std::map<std::string, std::string>{{"model", input["model"].get<std::string>()}}
+        lambda()
     );
 
     return openai_.post("audio/transcriptions", std::string{""}, "multipart/form-data"); 
@@ -898,8 +916,25 @@ inline Json CategoryAudio::transcribe(Json input) {
 // POST https://api.openai.com/v1/audio/translations
 // Translates audio into into English..
 inline Json CategoryAudio::translate(Json input) {
+    auto lambda = [input]() -> std::map<std::string, std::string> {
+        std::map<std::string, std::string> temp;
+        temp.insert({"model", input["model"].get<std::string>()});
+        if (input.contains("language")) {
+            temp.insert({"language", input["language"].get<std::string>()});
+        }
+        if (input.contains("prompt")) {
+            temp.insert({"prompt", input["prompt"].get<std::string>()});
+        }
+        if (input.contains("response_format")) {
+            temp.insert({"response_format", input["response_format"].get<std::string>()});
+        }
+        if (input.contains("temperature")) {
+            temp.insert({"temperature", std::to_string(input["temperature"].get<float>())});
+        }
+        return temp;
+    };
     openai_.setMultiformPart({"file", input["file"].get<std::string>()}, 
-        std::map<std::string, std::string>{{"model", input["model"].get<std::string>()}}
+        lambda()
     );
 
     return openai_.post("audio/translations", std::string{""}, "multipart/form-data"); 
