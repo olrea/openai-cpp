@@ -74,19 +74,18 @@ public:
 
     ~Session() { 
         curl_easy_cleanup(curl_); 
-        // curl_global_cleanup();
+        curl_global_cleanup();
         if (mime_form_ != nullptr) {
             curl_mime_free(mime_form_);
         }
     }
 
     void initCurl() {
-        // curl_global_init(CURL_GLOBAL_ALL);
+        curl_global_init(CURL_GLOBAL_ALL);
         curl_ = curl_easy_init();
         if (curl_ == nullptr) {
             throw std::runtime_error("curl cannot initialize"); // here we throw it shouldn't happen
         }
-        // 设置这个防止多线程调用崩溃
         curl_easy_setopt(curl_, CURLOPT_NOSIGNAL, 1);
     }
 
